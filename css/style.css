@@ -1,0 +1,54 @@
+.wrapper {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-evenly;
+}
+.battlefield {
+    width: 100%;
+    margin: 100px;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-evenly;
+    background-color: lightblue;
+    font-size: 20px;
+    color: #9c0000;
+    /* align-items: center; */
+}
+.opponent_1 {
+    background: no-repeat center/50% url("../img/left.jpg");
+}
+.opponent_2 {
+    background: no-repeat center/50% url("../img/right.jpg");
+}
+.opponent_1 , .opponent_2 {
+    width: 40%;
+    height: 500px;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: space-around;
+    align-items: center;
+    border: indigo 2px solid;
+    padding: 5px;
+}
+.bodyparts {
+    border: #00820b 2px solid;
+    padding: 10px;
+    
+}
+.opponent_1_top , .opponent_2_top {
+    width: 10%;
+    display: flex;
+    flex-flow: row nowrap;  
+}
+.opponent_1_center , .opponent_2_center {
+    width: 60%;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+}
+.opponent_1_bottom , .opponent_2_bottom {
+    width: 30%;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+}
