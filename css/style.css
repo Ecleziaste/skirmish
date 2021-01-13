@@ -33,7 +33,9 @@
 .bodyparts {
     border: #00820b 2px solid;
     padding: 10px;
-    
+}
+.bodyparts:hover {
+    cursor: pointer;
 }
 .opponent_1_top , .opponent_2_top {
     width: 10%;
