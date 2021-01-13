@@ -33,6 +33,21 @@
 .bodyparts {
     border: #00820b 2px solid;
     padding: 10px;
+    background-color: #19e619;
+    /* background-color: #eff314; */
+    /* background-color:#ff6f0f; */
+    /* background-color: #9c0000; */
+    opacity: 0.6;
+
+}
+.low_wound{
+    background-color: #eff314;
+}
+.medium_wound{
+    background-color:#ff6f0f;
+}
+.heavy_wound{
+    background-color: #9c0000;
 }
 .bodyparts:hover {
     cursor: pointer;
