@@ -7,21 +7,43 @@
 //     }
 // };
 
-//TODO: получить доступ к разным частям тела и их состоянию ранинрования
-// должно быть максимальное количество HP
-let target = document.querySelectorAll( '.bodyparts' );
-let targets = Array.from( target );
-// let targets = new Array( document.querySelectorAll( 'bodyparts' ) );
 
 // КОНСТРУКТОР ЧЕЛОВЕКООБРАЗНЫХ ПЕРСОНАЖЕЙ
-function Humanoid ( name ) {
+function Humanoid ( name, weapon, armor, weaponToEquip ) {
     this.name = name;
+    this.armor = armor;
+    this.currentWeapon = weapon;
+    this.accuracy = 1;
     this.move = 4;
-       // кол-во ходов по карте. отнимается за передвижение и действия
+    // кол-во ходов по карте. отнимается за передвижение и действия, когда равно нулю - пояляется кнопка ЗАКОНЧИТЬ ХОД(ф-ия передачи хода другому игроку)
     this.weaponCapacity = 0;
-    this.currentWeapon = 
+    
+    // // Ф-ИЯ для проверки на доступность оружия для текущего ранга игрока, ВЫЗОВ ПЕРЕД выстрелом мб делать??
+    // this.shotPermission = function ( currentWeapon ) {
+    //     if (this.rank >= currentWeapon.availability) {
+    //         return currentWeapon;
+    //     } else {
+    //         alert("You cannot use this weapon yet.")
+    //         // прервать выполнение ф-ии, которая осуществляет бросок на выстрел
+    //     }
+    // };
+
+    // this.equippedWeapons = function ( weapon ) {
+    //     return weapon.capacity;
+    // };
+    
+    // this.weaponCapacity = function ( weaponToEquip ) {
+    //     this.weaponCapacity += capacity;
+    //     if (this.weaponCapacity <= 10) {
+    //         return
+    //     }
+    //     else {
+    //         alert("Weapon capacity exceeded")
+    //         // прервать выполнение ф-ии, которая добавляет принимаемое оружие в экипированное для боя
+    //     }
+    // } ;
     // weaponCapacity = max 10 . орпделеяет сколько пушек можно быстро менять в бою вместо выстрела
-    // малогабаритное занимает 3 очка, среднее 4 очка, крупное 6(7) очков
+    // малогабаритное занимает 3 очка, среднее 4 очка, крупное 6 очков, граната 1.
     // 3 малогабаритных вида оружия,
     // 2 малогабаритных вида оружия и 1 среднегабаритное, 
     // 2 среднегабаритных, 
@@ -34,54 +56,56 @@ function Humanoid ( name ) {
     this.isAlive = true;
     this.heavyWounds = 0;
     this.checkCondition = function ( hp ) {
-        this.currentlHealth += hp;
-        if ( this.currentHealth > 30 ) {
-            this.currentHealth = maxHealth;
+        this.currentHealth += hp;
+        if ( this.currentHealth > this.maxHealth ) {
+            this.currentHealth = this.maxHealth;
             return this.currentHealth;
-        }
+        };
         if ( this.currentHealth === 0 ) {
             this.isAlive = false;
             return this.isAlive;
-        }
-        if ( this.heavyWounds = 3 ) {
+        };
+        if ( this.heavyWounds === 3 ) {
             this.isAlive = false;
             return this.isAlive;
-        }
+        };
         
     };
 
     
-    
-    
-    // TODO: функция rankUp() когда ранг повышается this.totalHealth += 5; максимальное здоровье повышается на 5 (и восстанавливается здоровье до текущей величины)
     this.expirience = 0;
-    this.rank = "rookie";
+    this.rank = 1;
+    this.displayedRank = "rookie";
+    // TODO: и восстанавливается здоровье до текущей величины, воздействуя на currentHealth ?
     this.checkRank = function ( xp ){
         this.expirience += xp;
         if ( this.expirience <= 19 ) {
-            // this.totalHealth = 30;
-            this.rank = "rookie";
-            return this.rank;
+            this.rank = 1;
+            this.displayedRank = "rookie"
+            this.maxHealth = 30;
+            return;
         } else if ( this.expirience >= 20 && this.expirience <= 49 ) {
-            this.rank = "skilled";
-            // this.totalHealth = 35;
-            return this.rank;
+            this.rank = 2;
+            this.displayedRank = "skilled";
+            this.maxHealth = 35;
+            return;
         } else if ( this.expirience >= 50 && this.expirience <= 99 ) {
-            this.rank = "veteran";
-            // this.totalHealth = 40;
-            return this.rank;
+            this.rank = 3;
+            this.displayedRank = "veteran";
+            this.maxHealth = 40;
+            return;
         } else {
-            this.rank = "master";
-            return this.rank;
-        }
-        
+            this.rank = 4;
+            this.displayedRank = "master";
+            this.maxHealth = 45;
+            return;
+        }   
     };
   
 };
 
-let leftPlayer = new Humanoid("Soldier");
-let rightPlayer = new Humanoid("Bandit");
 
+// навешиваем на бодипартс листенеры со счетчикоммм
 // СЧЕТЧИК РАН НА ЗАМЫКАНИИ ЫЫЫЫЫЫЫЫЫЫЫЫЫЫ БЛЯ
 
 
@@ -89,28 +113,32 @@ let rightPlayer = new Humanoid("Bandit");
 function Weapon ( name ) {
     this.name = name;
     this.capacity = 3;
-    // должно заполнять количество слотов в массиве weaponCapacity в объекте игрока
-    // oneHanded
+    // this.weaponCapacity = 3;
+    // должно заполнять количество слотов в массиве(или просто в переменной считается) weaponCapacity в объекте игрока
+    this.oneHanded = true;
     this.size = 1;
     // количество слотов в массиве предметов Inventory
-    this.availability = "rookie";
+    this.availability = 1;
+    this.availabilityDisplay = "Rookie";
     this.damage = 3;
     this.accuracy = 0;
     this.jamming = 0;
+    // this.takeAShot = function () {
+    //     if (this.shotPermission() == true) {
 
-}
+    //     } else {
+    //         alert("Shot has been failed.")
+    //     }
+    // }
 
-let startingWeapon = new Weapon ("Pistol");
+};
 
-
-
-
-
+// КОНСТРУКТОР БРОНИ
 function Armor ( name ) {
     this.name = name;
-    this.armor = 2;
+    this.defence = 1;
     // для разных частей тела физ защиту реализовать
-    this.chemArmor = 1;
+    this.chemDefence = 1;
 }
 
 function Inventory ( item ) {

@@ -24,10 +24,10 @@ body {
     /* align-items: center; */
 }
 .opponent_1 {
-    background: no-repeat center/50% url("../img/left.jpg");
+    background: no-repeat center/60% url("../img/left.jpg");
 }
 .opponent_2 {
-    background: no-repeat center/50% url("../img/right.jpg");
+    background: no-repeat center/60% url("../img/right.jpg");
 }
 .opponent_1 , .opponent_2 {
     width: 30%;
@@ -57,6 +57,13 @@ body {
     border-radius: 2px;
     margin: 4px;
     padding: 4px;
+}
+.panel:hover {
+    cursor: pointer;
+}
+.panel:active {
+    background-color: #9c0000;;
+    opacity: 0.8;
 }
 .bodyparts {
     border: #00820b 2px solid;
