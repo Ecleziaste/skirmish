@@ -1,14 +1,98 @@
+'use strict';
+// берем кнопки левого и правого оппонента и навешиваем на них листенеры для начала стрельбы
 const leftShot = document.querySelector ('.opponent_1_shot');
 const rightShot = document.querySelector ('.opponent_2_shot');
 
 leftShot.addEventListener('click', () => {
-    takeAShot(leftPlayer, rightPlayer);
+    let random = randomizerLeft();
+    accRoll(leftPlayer, rightPlayer, random);
 });
 
 rightShot.addEventListener('click', () => {
-    takeAShot(rightPlayer, leftPlayer);
+    let random = randomizerLeft();
+    accRoll(rightPlayer, leftPlayer, random);
 });
 
+// функция стрельбы(сначала счиает меткость, затем производит прицельный выстрел или от бердра ткущим оружием атакующего игрока через броню защищающегося)
+function accRoll(attPlayer, defPlayer, randomWound) {
+    let totalAcc = Math.floor(Math.random()*6 + 1) + attPlayer.accuracy + attPlayer.currentWeapon.accuracy;
+    if ( totalAcc >= 5 ) {
+        alert("You can choose where to shoot -_-" + "\nПрицельная стрельба!")
+        // ф-ии aimShot() и randomShot() ??
+       
+    } else if ( totalAcc > 1 && totalAcc <= 4 ) {
+        alert("Random shot!" + "\nСтрельба от бедра.");
+        takeAShot(attPlayer, defPlayer, randomWound)
+        // attPlayer.checkRank(2);
+        // defPlayer.checkRank(1);
+        // defPlayer.checkWoundsCondition()
+        // checkVictory();
+    } else if ( totalAcc <= 1 ) {
+        alert("You missed :(" + "\nПромах...")
+    }
+};
+
+// заменить на randShot, внутри создать переменную randomWound и присвоить ей результат работы рандомайзера
+function takeAShot (attPlayer, defPlayer, randomWound) {
+    let dmg = attPlayer.currentWeapon.damage - defPlayer.armor.defence;
+        if (dmg <= 0) {
+            dmg = 1;
+        };
+    defPlayer.checkCondition(-dmg);
+    defPlayer.dmgTaken[randomWound] += dmg;
+    attPlayer.checkRank(2);
+    defPlayer.checkRank(1);
+    defPlayer.checkWoundsCondition()
+    checkVictory(); 
+    return;
+};
+
+//функция для цикла навешивания событий
+function aimShot (attPlayer, defPlayer, i) {
+    let dmg = attPlayer.currentWeapon.damage - defPlayer.armor.defence;
+        if (dmg <= 0) {
+            dmg = 1;
+        };
+    defPlayer.checkCondition(-dmg);
+    defPlayer.dmgTaken[i] += dmg;
+    attPlayer.checkRank(2);
+    defPlayer.checkRank(1);
+    defPlayer.checkWoundsCondition()
+    checkVictory();
+    return;
+};
+
+
+// function randomWound () {
+// }
+
+// function aimWound () {
+// }
+
+// let head1 = document.querySelector('.opponent_1_head');
+
+// // РАБОЧИЙ ВЫСТРЕЛ В ГОЛОВУ
+// head1.addEventListener('click', function () {
+//     let dmg = 0;
+//     takeAShot(rightPlayer, leftPlayer, dmg);
+//     leftPlayer.dmgTaken[0] += dmg;
+//     rightPlayer.checkRank(2);
+//     leftPlayer.checkRank(1);
+//     leftPlayer.checkWoundsCondition()
+//     checkVictory();
+//     return;
+// });
+
+//получаем рандомное число от 0 до 5
+function randomizerLeft () {
+    let number = Math.floor(Math.random()*6 + 0);
+    return number;
+}
+//получаем рандомное число от 6 до 11
+function randomizerRight () {
+    let number = Math.floor(Math.random()*6 + 6);
+    return number;
+}
 //call after every shot or at low HP 
 function checkVictory () {
     if (leftPlayer.isAlive == false) {
@@ -20,16 +104,10 @@ function checkVictory () {
     }
 };
 
-function accRoll(attackingPlayer) {
-    let totalAcc = Math.floor(Math.random()*6 + 1) + attackingPlayer.accuracy + attackingPlayer.currentWeapon.accuracy;
-    if ( totalAcc >= 5 ) {
-        alert("You can choose where to shoot -_-")
-    }
-};
-// shotPermission = function (attackingPlayer, defendingPlayer) {
-//     if (attackingPlayer.rank >= attackingPlayer.currentWeapon.availability) {
+// shotPermission = function (attPlayer, defPlayer) {
+//     if (attPlayer.rank >= attPlayer.currentWeapon.availability) {
 //         alert("You are shooting")
-//         takeAShot(attackingPlayer, defendingPlayer)
+//         takeAShot(attPlayer, defPlayer)
 //     } else {
 //         alert("You cannot use this weapon yet.")
 //         // прервать выполнение ф-ии, которая осуществляет бросок на выстрел
@@ -38,24 +116,6 @@ function accRoll(attackingPlayer) {
 
 //получаем рандомное число от 1 до 6
 // console.log(Math.floor(Math.random()*6 + 1)); 
-
-
-takeAShot = function (attackingPlayer, defendingPlayer) {
-    accRoll(attackingPlayer);
-    let dmgTaken = attackingPlayer.currentWeapon.damage - defendingPlayer.armor.defence;
-        if (dmgTaken <= 0) {
-            dmgTaken = 1;
-        };
-    defendingPlayer.checkCondition(-dmgTaken);
-    attackingPlayer.checkRank(2);
-    defendingPlayer.checkRank(1);
-    checkVictory();  
-    return;
-
-};
-
-// shotPermission(leftPlayer, rightPlayer);
-// takeAShot(leftPlayer, rightPlayer);
 
 // Урон = урон оружия +-модификаторы + dmgRoll( )
 // Точность(выбор КУДА стрелять) = точность оружия +-модификаторы + accRoll( )
