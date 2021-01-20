@@ -42,10 +42,12 @@ let healButton = document.querySelector( '.heal_all' );
 healButton.addEventListener('click', () => {
     leftPlayer.dmgTaken = [0,0,0,0,0,0];
     rightPlayer.dmgTaken = [0,0,0,0,0,0];
+    leftPlayer.checkWoundsCondition();
+    rightPlayer.checkWoundsCondition();
     leftPlayer.currentHealth = leftPlayer.maxHealth;
     rightPlayer.currentHealth = rightPlayer.maxHealth;
-    alert("Боги хотят продолжения битвы!")
-    console.log("Боги хотят продолжения битвы!")
+    alert("Боги желают продолжения битвы!")
+    console.log("Боги желают продолжения битвы!")
     return;
 });
 

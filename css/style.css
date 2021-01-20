@@ -130,7 +130,8 @@ body {
     /* добавить animation для мерцания смертельной раны */
 }
 .heavy_wound:hover{
-    background-color: #720000;
+    background-color: #3f0000;
+    /* background-color: #720000; */
 }
 .opponent_1_top , .opponent_2_top {
     width: 10%;

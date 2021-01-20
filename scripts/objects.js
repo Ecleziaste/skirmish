@@ -55,7 +55,33 @@ function Humanoid ( name, weapon, armor, weaponToEquip ) {
     //     leftLeg : 0,
     // };
 
-    this.checkWoundsCondition = function (dmgTaken) {
+    this.checkWoundsCondition = function () {
+        // if (this.dmgTaken[0] >= 1 && this.dmgTaken[0] <= 3) {
+        //     targets[0].classList.add('.low_wound');
+        // }
+        if (this.dmgTaken[0] >= 1 && this.dmgTaken[0] <= 3) {
+            targets[0].classList.add('low_wound');
+            targets[0].classList.remove('medium_wound', 'heavy_wound');
+        }
+        if (this.dmgTaken[0] >= 4 && this.dmgTaken[0] <= 6) {
+            targets[0].classList.add('medium_wound');
+            targets[0].classList.remove('low_wound', 'heavy_wound');
+        }
+        if (this.dmgTaken[0] >= 7) {
+            targets[0].classList.add('heavy_wound');
+            targets[0].classList.remove('low_wound', 'medium_wound');
+        }
+        if (this.dmgTaken[0] == 0) {
+            targets[0].classList.remove('low_wound', 'medium_wound', 'heavy_wound');
+        }
+       
+// document.getElementById("MyElement").classList.add('MyClass');
+
+// document.getElementById("MyElement").classList.remove('MyClass');
+
+// if ( document.getElementById("MyElement").classList.contains('MyClass') )
+
+// targets[0].classList.toggle('MyClass');
     // считает дамаг повреждаемой части тела тела и меняет класс в html. Нужно снижать this.accuracy -= 1 за повреждение головы и обеих рук средней раной.
     // + снижать this.move -= 1 за тяжелые ранения ног и шанс сбежать из боя в runawayRoll()
     //  цикл с условиями (МБ ТУТ ПРЕВРАЩАТЬ ОБЪЕКТ В МАССИВ а возвращать значения объекта?)
