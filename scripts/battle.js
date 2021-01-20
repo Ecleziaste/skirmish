@@ -2,17 +2,17 @@
 // берем кнопки левого и правого оппонента и навешиваем на них листенеры для начала стрельбы
 const leftShot = document.querySelector ('.opponent_1_shot');
 const rightShot = document.querySelector ('.opponent_2_shot');
-
+// запускаем рандомайзер для рандомного выстрела по противнику для левого игрока,
+// если он удачный, то совершается выстрел в рандомную часть тела праавого игркоа из текущего оружия левого
 leftShot.addEventListener('click', () => {
     let random = randomizerLeft();
     accRoll(leftPlayer, rightPlayer, random);
 });
-
+// запускаем рандомайзер для рандомного выстрела по противнику
 rightShot.addEventListener('click', () => {
     let random = randomizerLeft();
     accRoll(rightPlayer, leftPlayer, random);
 });
-
 // функция стрельбы(сначала счиает меткость, затем производит прицельный выстрел или от бердра ткущим оружием атакующего игрока через броню защищающегося)
 function accRoll(attPlayer, defPlayer, randomWound) {
     let totalAcc = Math.floor(Math.random()*6 + 1) + attPlayer.accuracy + attPlayer.currentWeapon.accuracy;
@@ -39,6 +39,8 @@ function takeAShot (attPlayer, defPlayer, randomWound) {
             dmg = 1;
         };
     defPlayer.checkCondition(-dmg);
+    attPlayer.checkCondition(0);
+    // второй раз вызываем для изменения состояния атакующего персонажа на "живого", если это требуется после его смерти и влияния воли богов
     defPlayer.dmgTaken[randomWound] += dmg;
     attPlayer.checkRank(2);
     defPlayer.checkRank(1);
@@ -46,42 +48,6 @@ function takeAShot (attPlayer, defPlayer, randomWound) {
     checkVictory(); 
     return;
 };
-
-//функция для цикла навешивания событий
-function aimShot (attPlayer, defPlayer, i) {
-    let dmg = attPlayer.currentWeapon.damage - defPlayer.armor.defence;
-        if (dmg <= 0) {
-            dmg = 1;
-        };
-    defPlayer.checkCondition(-dmg);
-    defPlayer.dmgTaken[i] += dmg;
-    attPlayer.checkRank(2);
-    defPlayer.checkRank(1);
-    defPlayer.checkWoundsCondition()
-    checkVictory();
-    return;
-};
-
-
-// function randomWound () {
-// }
-
-// function aimWound () {
-// }
-
-// let head1 = document.querySelector('.opponent_1_head');
-
-// // РАБОЧИЙ ВЫСТРЕЛ В ГОЛОВУ
-// head1.addEventListener('click', function () {
-//     let dmg = 0;
-//     takeAShot(rightPlayer, leftPlayer, dmg);
-//     leftPlayer.dmgTaken[0] += dmg;
-//     rightPlayer.checkRank(2);
-//     leftPlayer.checkRank(1);
-//     leftPlayer.checkWoundsCondition()
-//     checkVictory();
-//     return;
-// });
 
 //получаем рандомное число от 0 до 5
 function randomizerLeft () {

@@ -9,89 +9,37 @@ let rightPlayer = new Humanoid("Soldier", startingWeapon, startingArmor);
 let target = document.querySelectorAll( '.bodyparts' );
 let targets = Array.from( target );
 // let targets = new Array( document.querySelectorAll( '.bodyparts' ) );
-// function targetsIncrease (i, dmg){
-//     leftPlayer.dmgTaken[i] += dmg;
-//     return leftPlayer.dmgTaken[i];   
-// };
-// работа прицельных выстрелов по левому стрелку
-for ( let i = 0; i <= 5; i++ ) {
-    // const attPlayer = rightPlayer;
-    // const defPlayer = leftPlayer;
-    targets[i].addEventListener('click', function (i) {
-        aimShot (rightPlayer, leftPlayer, i)
-        return;
-        // let dmg = attPlayer.currentWeapon.damage - defPlayer.armor.defence;
-        // if (dmg <= 0) {
-        //     dmg = 1;
-        // };
-        // defPlayer.checkCondition(-dmg);
-        // // defPlayer.dmgTaken[randomWound] += dmg; 
-        // defPlayer.dmgTaken[i] += dmg;
-        // attPlayer.checkRank(2);
-        // defPlayer.checkRank(1);
-        // defPlayer.checkWoundsCondition()
-        // checkVictory();
-        // return;
 
-        // // function aimShot (attPlayer, defPlayer, i);
-        // let dmg = attPlayer.currentWeapon.damage - defPlayer.armor.defence;
-        // if (dmg <= 0) {
-        //     dmg = 1;
-        // };
-        // defPlayer.checkCondition(-dmg);
-        // defPlayer.dmgTaken[randomWound] += dmg; 
-        // // targetsIncrease(i, dmg);
-        // leftPlayer.dmgTaken[i] += dmg;
-        // rightPlayer.checkRank(2);
-        // leftPlayer.checkRank(1);
-        // leftPlayer.checkWoundsCondition()
-        // checkVictory();
-        // return;
-    });
+// работа прицельных выстрелов. ф-ия НЕ читалась из battle.js вероятно из-за стрелочных ф-ий в клике. зато клик не навязывает свой this
+function aimShot (attPlayer, defPlayer, i) {
+    let dmg = attPlayer.currentWeapon.damage - defPlayer.armor.defence;
+        if (dmg <= 0) {
+            dmg = 1;
+        };
+    defPlayer.checkCondition(-dmg);
+    attPlayer.checkCondition(0);
+    defPlayer.dmgTaken[i] += dmg;
+    attPlayer.checkRank(2);
+    defPlayer.checkRank(1);
+    defPlayer.checkWoundsCondition()
+    checkVictory();
+    return;
 };
-
-
-
-
-// targets[1].addEventListener('click', function () {
-//     // let j = 0;
-//     let dmg = 0;
-//     takeAShot(rightPlayer, leftPlayer, dmg);
-//     // targetsIncrease (i)
-//     leftPlayer.dmgTaken[4] += dmg;
-//     rightPlayer.checkRank(2);
-//     leftPlayer.checkRank(1);
-//     leftPlayer.checkWoundsCondition()
-//     checkVictory();
-//     return;
-// });
-
-// for ( let i = 0; i <= 5; i++ ) {
-//         let index = i;
-//     targets[i].addEventListener('click', aimShotLeft(index));
-
-// };
-
-// function aimShotLeft (index) {
-//         let dmg = 0;
-//         takeAShot(rightPlayer, leftPlayer, dmg);
-//         leftPlayer.dmgTaken[index] += dmg;
-//         rightPlayer.checkRank(2);
-//         leftPlayer.checkRank(1);
-//         leftPlayer.checkWoundsCondition()
-//         checkVictory();
-//         return;
-// }
-
-// !!!!!!!!!!
-//TODO: // НАВЕШАТЬ ЦИКЛОМ эвент листенеры на массив таргетс с передаваемыми 0-11 в функцию прицельного выстрела. она должна в обхекта повышать рану определенную и онимать каррент хелс на ту же величину
-// !!!!!!!!!!!
+// навешиваем цели на левого
+for ( let i = 0; i <= 5; i++ ) {
+    targets[i].addEventListener('click', () => {
+        aimShot (rightPlayer, leftPlayer, i)
+    });
+}
+// навешиваем цели на правого
+for ( let i = 0; i <= 5; i++ ) {
+    targets[i+6].addEventListener('click', () => {
+        aimShot (leftPlayer, rightPlayer, i)
+    });
+}
+// воля богов (хилим всех и обнуляем состояния ран)
 let healButton = document.querySelector( '.heal_all' );
 healButton.addEventListener('click', () => {
-    // for ( let targetsIndex = 0; targetsIndex < targets.length; targetsIndex++  ) {
-    //     targets[targetsIndex].dmgTaken = 0;
-    // }
-    //надо этим фором воздействовать на объект(будущий массив если не найду нужного метода) и обнулять значения ключей
     leftPlayer.dmgTaken = [0,0,0,0,0,0];
     rightPlayer.dmgTaken = [0,0,0,0,0,0];
     leftPlayer.currentHealth = leftPlayer.maxHealth;
