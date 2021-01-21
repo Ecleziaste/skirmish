@@ -44,7 +44,7 @@ function takeAShot (attPlayer, defPlayer, randomWound) {
     defPlayer.dmgTaken[randomWound] += dmg;
     attPlayer.checkRank(2);
     defPlayer.checkRank(1);
-    defPlayer.checkWoundsCondition()
+    checkWoundsCondition(defPlayer);
     checkVictory(); 
     return;
 };

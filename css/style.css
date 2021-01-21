@@ -72,7 +72,8 @@ body {
 }
 .opponent_1_panel , .opponent_2_panel {
     /* width: 35%; */
-    height: 30%;
+    /* height: 30%; */
+    height: 40%;
     display: flex;
     flex-flow: column nowrap;
     justify-content: space-around;
