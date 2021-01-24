@@ -14,7 +14,56 @@ function Humanoid ( name, weapon, armor, items, weaponToEquip, itemToEquip, item
     this.name = name;
     this.armor = armor;
     this.currentWeapon = weapon;
-    this.accuracy = 1;
+    this.defaultAccuracy = 1;
+    this.modAccuracy = 0;
+    // this.modAccuracyHead = 0;
+    // this.modAccuracyRighthand = 0;
+    // this.modAccuracyLeftHand = 0;
+    this.changeAccuracy = function (otherParam) {
+        let modAccuracyHead = 0;
+        let modAccuracyRightHand = 0;
+        let modAccuracyLeftHand = 0;
+        // проверка повреждений головы
+        if (this.dmgTaken[0] == 0) {
+            modAccuracyHead = 0; 
+        } else if (this.dmgTaken[0] >= 4 && this.dmgTaken[0] <= 6) {
+            modAccuracyHead = -0.5;
+        } else if (this.dmgTaken[0] >= 7) {
+            modAccuracyHead = -1;
+        }   
+        // повреждения правой и левой рук
+        if (this.dmgTaken[1] == 0) {
+            modAccuracyRightHand = 0;
+            // console.log(this.accuracy);
+        } else if (this.dmgTaken[1] >= 4 && this.dmgTaken[1] <= 6) {
+            modAccuracyRightHand = -0.25;
+            // console.log(this.accuracy)
+        } else if (this.dmgTaken[1] >= 7) {
+            modAccuracyRightHand = -0.5;
+            // console.log(this.accuracy)
+        }
+        if (this.dmgTaken[3] == 0) {
+            modAccuracyLeftHand = 0;
+            // console.log(this.accuracy);
+        } else if (this.dmgTaken[3] >= 4 && this.dmgTaken[3] <= 6) {
+            modAccuracyLeftHand = -0.25;
+            // console.log(this.accuracy);
+        } else if (this.dmgTaken[3] >= 7) {
+            modAccuracyLeftHand = -0.5;
+            // console.log(this.accuracy);
+        }
+    
+        let modAccuracy = modAccuracyHead + modAccuracyRightHand + modAccuracyLeftHand;
+        // чтобы переменная в объекте изменялась, возможно будут и другие источники изменения модифицированной точности(перки, дебаффы)
+        this.modAccuracy = modAccuracy + otherParam;
+        this.accuracy = this.defaultAccuracy + this.modAccuracy;
+    };
+   
+    // текущая точность
+    this.accuracy = this.defaultAccuracy + this.modAccuracy;
+    // this.accuracy = this.defaultAccuracy + this.modAccuracy;
+
+    // текущие очки ходов
     this.move = 4;
     // кол-во ходов по карте. отнимается за передвижение и действия, когда равно нулю - пояляется кнопка ЗАКОНЧИТЬ ХОД(ф-ия передачи хода другому игроку)
     this.weaponCapacity = 0;
@@ -40,9 +89,10 @@ function Humanoid ( name, weapon, armor, items, weaponToEquip, itemToEquip, item
     // 1 малогабаритное и 1 крупногабаритное.
     // метод стрельбы. берет урон из current weapon + модификаторы и отнибает из него бронь,
     //  полученное значение: прибавляется в часть тела куда стреляли; отнимает здоровье из currentHealth
-
-    this.maxHealth = 30;
-    this.currentHealth = 30;
+    this.modHealth = 0;
+    this.maxHealth = 30 + this.modHealth;
+    this.currentHealth = this.maxHealth;
+    // УЧЕСТЬ УВЕЛИЧИВАЕМОЕ ЗДОРОВЬЕ от первков и лвлАПА
     this.isAlive = true;
     this.dmgTaken = [0,0,0,0,0,0];
     // МБ ПРОСТО СДЕЛАТЬ МАССИВ С НУЛЯМИ и ориентироваться. так и так смогу
@@ -76,7 +126,6 @@ function Humanoid ( name, weapon, armor, items, weaponToEquip, itemToEquip, item
     //     }
     //  };  
 
-    // считает дамаг повреждаемой части тела тела и меняет класс в html. Нужно снижать this.accuracy -= 1 за повреждение головы и обеих рук средней раной.
     // + снижать this.move -= 1 за тяжелые ранения ног и шанс сбежать из боя в runawayRoll()
     //  цикл с условиями (МБ ТУТ ПРЕВРАЩАТЬ ОБЪЕКТ В МАССИВ а возвращать значения объекта?)
     // ХОТЯ всё равно надо бдует манипулировать классами разных частей тела разных оппонентов, пока сойдет повторяющийся код
@@ -121,22 +170,23 @@ function Humanoid ( name, weapon, armor, items, weaponToEquip, itemToEquip, item
     // TODO: и восстанавливается здоровье до текущей величины, воздействуя на currentHealth ?
     this.checkRank = function ( xp ){
         this.expirience += xp;
+        // влияние на максимальное здоровье персонажа
         if ( this.expirience <= 19 ) {
             this.rank = 1;
             this.displayedRank = "Rookie"
-            this.maxHealth = 30;
+            this.maxHealth = 30 + this.modHealth;
         } else if ( this.expirience >= 20 && this.expirience <= 49 ) {
             this.rank = 2;
             this.displayedRank = "Skilled";
-            this.maxHealth = 35;
+            this.maxHealth = 35 + this.modHealth;
         } else if ( this.expirience >= 50 && this.expirience <= 99 ) {
             this.rank = 3;
             this.displayedRank = "Veteran";
-            this.maxHealth = 40;
+            this.maxHealth = 40 + this.modHealth;
         } else {
             this.rank = 4;
             this.displayedRank = "Master";
-            this.maxHealth = 45;
+            this.maxHealth = 45 + this.modHealth;
         }   
     };
 };

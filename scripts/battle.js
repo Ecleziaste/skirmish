@@ -24,45 +24,39 @@ function accRoll(attPlayer, defPlayer, randomWound) {
         if (attPlayer.currentWeapon.type == "shotgun") {
             alert("Take a shot in another bodypart")
             let randomWound = randomizerLeft();
-            takeAShot(attPlayer, defPlayer, randomWound)
+            randShot(attPlayer, defPlayer, randomWound)
             // реализовать рандомную стрельбу после прицеьного выстрела
-        }
-        // ф-ии aimShot() и randomShot() ??
-       
+        }   
     } else if ( totalAcc > 1 && totalAcc <= 4 ) {
         alert("Random shot!" + "\nСтрельба от бедра.");
-        takeAShot(attPlayer, defPlayer, randomWound)
+        randShot(attPlayer, defPlayer, randomWound)
         if (attPlayer.currentWeapon.type == "smg") {
             let randomWound = randomizerLeft();
-            takeAShot(attPlayer, defPlayer, randomWound)
+            randShot(attPlayer, defPlayer, randomWound)
         }
         if (attPlayer.currentWeapon.type == "shotgun") {
             let randomWound = randomizerLeft();
-            takeAShot(attPlayer, defPlayer, randomWound)
+            randShot(attPlayer, defPlayer, randomWound)
         }
-        // attPlayer.checkRank(2);
-        // defPlayer.checkRank(1);
-        // defPlayer.checkWoundsCondition()
-        // checkVictory();
     } else if ( totalAcc <= 1 ) {
         alert("You missed :(" + "\nПромах...")
     }
 };
 
 // заменить на randShot, внутри создать переменную randomWound и присвоить ей результат работы рандомайзера
-function takeAShot (attPlayer, defPlayer, randomWound) {
+function randShot (attPlayer, defPlayer, randomWound) {
     let dmg = attPlayer.currentWeapon.damage - defPlayer.armor.defence;
         if (dmg <= 0) {
             dmg = 1;
-        };
-    // храним тут значения для работы с ф-ией checkCondition :)    
-    let paintWound = 0;
-    let dmgBodypart = 0;
+        };  
     defPlayer.checkCondition(-dmg);
+     // второй раз вызываем для изменения состояния атакующего персонажа на "живого", если это требуется после его смерти и влияния воли богов
     attPlayer.checkCondition(0);
-    // второй раз вызываем для изменения состояния атакующего персонажа на "живого", если это требуется после его смерти и влияния воли богов
+    // меняем состояние части тела, куда попала пуля   
     defPlayer.dmgTaken[randomWound] += dmg;
 
+    let paintWound = 0;
+    let dmgBodypart = 0;
     if (defPlayer === rightPlayer) {
         dmgBodypart = randomWound;
         paintWound = randomWound + 6;
@@ -70,7 +64,10 @@ function takeAShot (attPlayer, defPlayer, randomWound) {
         dmgBodypart = randomWound;
         paintWound = randomWound;
     }
-    checkWoundsCondition(defPlayer, dmgBodypart, paintWound); 
+
+    checkWoundsCondition(defPlayer, dmgBodypart, paintWound);
+        //запускаем метод, считающий штрафы от ран внутри объекта   
+        defPlayer.changeAccuracy();
     attPlayer.checkRank(2);
     defPlayer.checkRank(1);
     showHealth ();
@@ -87,21 +84,23 @@ function aimShot (attPlayer, defPlayer, i) {
     defPlayer.checkCondition(-dmg);
     attPlayer.checkCondition(0);
     defPlayer.dmgTaken[i] += dmg;
+
     attPlayer.checkRank(2);
     defPlayer.checkRank(1);
-    // checkWoundsCondition(defPlayer, i);
-    // checkWoundsCondition(attPlayer);
     showHealth();
     checkVictory();
 };
 // вынесенная наружу из объекта функция проверки состояния объекта и окрашивания нужных целей + проверки и реализации последствий от ран
 // that - это тот, В КОГО стреляют(объект)
 function checkWoundsCondition (that , i , j) {
-    if (that.dmgTaken[i] >= 1 && that.dmgTaken[0] <= 3) {
+    if (that.dmgTaken[i] <= 0) {
+        targets[j].classList.remove('low_wound','medium_wound', 'heavy_wound');
+    }
+    if (that.dmgTaken[i] >= 1 && that.dmgTaken[i] <= 3) {
         targets[j].classList.add('low_wound');
         targets[j].classList.remove('medium_wound', 'heavy_wound');
     }
-    if (that.dmgTaken[i] >= 4 && that.dmgTaken[0] <= 6) {
+    if (that.dmgTaken[i] >= 4 && that.dmgTaken[i] <= 6) {
         targets[j].classList.add('medium_wound');
         targets[j].classList.remove('low_wound', 'heavy_wound');
     }
@@ -112,12 +111,82 @@ function checkWoundsCondition (that , i , j) {
         // that.checkCondition(0);
         checkVictory();
     }
-    if (that.dmgTaken[i] == 0) {
-        targets[j].classList.remove('low_wound', 'medium_wound', 'heavy_wound');
-    }
+    that.changeAccuracy(0);
+    // // повреждения торса
+    // if (that.dmgTaken[2] == 0) {
+    //     that.accuracy = that.defaultAccuracy + that.modAccuracy;
+    // } else if (that.dmgTaken[2] >= 4 && that.dmgTaken[0] <= 6) {
+    //     that.accuracy = that.defaultAccuracy + that.modAccuracy -(0.5);
+    //     console.log(that.accuracy)
+    // } else if (that.dmgTaken[2] >= 7) {
+    //     that.accuracy = that.defaultAccuracy + that.modAccuracy -1;
+    //     console.log(that.accuracy)
+    // }
+    // // повреждения правой и левой ног
+    // if (that.dmgTaken[4] == 0) {
+    //     that.accuracy = that.defaultAccuracy + that.modAccuracy;
+    // } else if (that.dmgTaken[4] >= 4 && that.dmgTaken[0] <= 6) {
+    //     that.accuracy = that.defaultAccuracy + that.modAccuracy -(0.5);
+    //     console.log(that.accuracy)
+    // } else if (that.dmgTaken[4] >= 7) {
+    //     that.accuracy = that.defaultAccuracy + that.modAccuracy -1;
+    //     console.log(that.accuracy)
+    // }
 
+    // if (that.dmgTaken[5] == 0) {
+    //     that.accuracy = that.defaultAccuracy + that.modAccuracy;
+    // } else if (that.dmgTaken[5] >= 4 && that.dmgTaken[0] <= 6) {
+    //     that.accuracy = that.defaultAccuracy + that.modAccuracy -(0.5);
+    //     console.log(that.accuracy)
+    // } else if (that.dmgTaken[5] >= 7) {
+    //     that.accuracy = that.defaultAccuracy + that.modAccuracy -1;
+    //     console.log(that.accuracy)
+    // }
 
 };
+// function changeAccuracy (that) {
+    
+//     let modAccuracyHead = 0;
+//     let modAccuracyRightHand = 0;
+//     let modAccuracyLeftHand = 0;
+//     // повреждения головы
+//     if (that.dmgTaken[0] == 0) {
+//         modAccuracyHead = 0;
+//         console.log(that.accuracy);  
+//     } else if (that.dmgTaken[0] >= 4 && that.dmgTaken[0] <= 6) {
+//         modAccuracyHead = -0.5;
+//         console.log(that.accuracy);
+//     } else if (that.dmgTaken[0] >= 7) {
+//         modAccuracyHead = -1;
+//         console.log(that.accuracy)
+//     }   
+    
+//     // повреждения правой и левой рук
+//     if (that.dmgTaken[1] == 0) {
+//         modAccuracyRightHand = 0;
+//         // console.log(that.accuracy);
+//     } else if (that.dmgTaken[1] >= 4 && that.dmgTaken[0] <= 6) {
+//         modAccuracyRightHand = -0.25;
+//         // console.log(that.accuracy)
+//     } else if (that.dmgTaken[1] >= 7) {
+//         modAccuracyRightHand = -0.5;
+//         // console.log(that.accuracy)
+//     }
+
+//     if (that.dmgTaken[3] == 0) {
+//         modAccuracyLeftHand = 0;
+//         // console.log(that.accuracy);
+//     } else if (that.dmgTaken[3] >= 4 && that.dmgTaken[0] <= 6) {
+//         modAccuracyLeftHand = -0.25;
+//         // console.log(that.accuracy);
+//     } else if (that.dmgTaken[3] >= 7) {
+//         modAccuracyLeftHand = -0.5;
+//         // console.log(that.accuracy);
+//     }
+
+//     modAccuracy = modAccuracyHead + modAccuracyRightHand + modAccuracyLeftHand;
+//     return that.accuracy += modAccuracy;
+// };
 //получаем рандомное число от 0 до 5
 function randomizerLeft () {
     let number = Math.floor(Math.random()*6 + 0);
@@ -151,7 +220,7 @@ function showHealth () {
 // shotPermission = function (attPlayer, defPlayer) {
 //     if (attPlayer.rank >= attPlayer.currentWeapon.availability) {
 //         alert("You are shooting")
-//         takeAShot(attPlayer, defPlayer)
+//         randShot(attPlayer, defPlayer)
 //     } else {
 //         alert("You cannot use this weapon yet.")
 //         // прервать выполнение ф-ии, которая осуществляет бросок на выстрел

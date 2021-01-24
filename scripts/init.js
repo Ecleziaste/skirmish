@@ -18,7 +18,6 @@ rightPlayer.name = prompt("Введите имя правого игрока", "
 // TODO: сделать модальное окно, возникающее в самом начале, где нужно выбрать кто будет стрелять первым(левый оппонент или правый).
 // в зависимости от выбора убираем опасити или как-то наоборот выделяем того, кто должен стрелять
 
-
 // навешиваем цели и последствия от их поражения на левого
 // здесь и далее i - часть тела объекта для защиты и атаки, j - кликабельная часть тела, отображаемая пользователю 
 for ( let i = 0; i <= 5; i++ ) {
@@ -38,7 +37,6 @@ for ( let i = 0; i <= 5; i++ ) {
     });
     
 }
-
 // воля богов (хилим всех и обнуляем состояния ран)
 let healButton = document.querySelector( '.heal_all' );
 healButton.addEventListener('click', () => {
@@ -60,27 +58,28 @@ healButton.addEventListener('click', () => {
     console.log("Боги желают продолжения битвы!")
     return;
 });
-
 // кнопка рандомайзер, решающая, кто стреляет первым
 document.querySelector('.randomizer').addEventListener('click', () => {
-    let number = 0;
-    randomizerLeft();
-    if (number <= 3) {
-        alert("Стреляет игрок слева")
+    let result = randomizerLeft() + 1;
+    if (result <= 3) {
+        alert("Стреляет игрок СЛЕВА")
     } else {
-        alert("Стреляет игрок справа")
+        alert("Стреляет игрок СПРАВА")
     }
 });
 
-// лечение черепов для тестов
+// лечение черепов для тестов, ради аптечек(лечит всё тело на определенную величину) и бинтов(для одной части тела)
 let healLeftHeadBtn = document.querySelector( '.opponent_1_heal_head' );
 healLeftHeadBtn.addEventListener('click', () => {
     if (leftPlayer.dmgTaken[0] >= 1) {
     leftPlayer.dmgTaken[0] -= 2;
     checkWoundsCondition(leftPlayer, 0, 0);
     leftPlayer.currentHealth += 2;
-    } else {
-        alert('skull already cured')
+    }
+    if (leftPlayer.dmgTaken[0] <= 0){
+        leftPlayer.dmgTaken[0] = 0;
+        // чтобы не заходило в минус
+        alert('skull fully cured')
     }
 });
 let healRightHeadBtn = document.querySelector( '.opponent_2_heal_head' );
@@ -89,7 +88,9 @@ healRightHeadBtn.addEventListener('click', () => {
     rightPlayer.dmgTaken[0] -= 2;
     checkWoundsCondition(rightPlayer, 0, 6);
     rightPlayer.currentHealth += 2;
-    } else {
-        alert('skull already cured')
+    }
+    if (rightPlayer.dmgTaken[0] <= 0) {
+        rightPlayer.dmgTaken[0] = 0;
+        alert('skull fully cured')
     }
 });
