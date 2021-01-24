@@ -10,7 +10,7 @@
 // };
 
 // КОНСТРУКТОР ЧЕЛОВЕКООБРАЗНЫХ ПЕРСОНАЖЕЙ
-function Humanoid ( name, weapon, armor, weaponToEquip ) {
+function Humanoid ( name, weapon, armor, items, weaponToEquip, itemToEquip, itemToInventory, perks ) {
     this.name = name;
     this.armor = armor;
     this.currentWeapon = weapon;
@@ -81,8 +81,6 @@ function Humanoid ( name, weapon, armor, weaponToEquip ) {
     //  цикл с условиями (МБ ТУТ ПРЕВРАЩАТЬ ОБЪЕКТ В МАССИВ а возвращать значения объекта?)
     // ХОТЯ всё равно надо бдует манипулировать классами разных частей тела разных оппонентов, пока сойдет повторяющийся код
     
-    // 3 heavyWounds ведет к смерти. нужно плюсовать сюда значения тяжелых ран, то бишь как-то получать их соостояние из надамаженных частей
-    // + добавлять класс тяжелых ран в элемент для окраски
     this.heavyWounds = 0;
     // смертельная рана - становится 1, когда попадают в тяжелую рану(убивает игрока) метод brutalDeath() {return defendingPlayer.isAlive = false;}
     // можно сделать просто +5 к дамагу, если попали в тяжелую рану еще раз(это лучше тестить, когда будет доступно леченеи бинтами и аптечками, стимуляторами)
@@ -92,28 +90,22 @@ function Humanoid ( name, weapon, armor, weaponToEquip ) {
     this.checkCondition = function ( hp ) {
         this.currentHealth += hp;
         if ( this.currentHealth > this.maxHealth ) {
-            this.currentHealth = this.maxHealth;
-            return this.currentHealth;
+           this.currentHealth = this.maxHealth;
         };
-        if ( this.currentHealth === 0 ) {
-            this.isAlive = false;
-            return this.isAlive;
+        if ( this.currentHealth <= 0 ) {
+           this.isAlive = false;
         };
         if ( this.currentHealth > 0 ) {
-            this.isAlive = true;
-            return this.isAlive;
+           this.isAlive = true;
         };
-        if ( this.heavyWounds === 3 ) {
-            this.isAlive = false;
-            return this.isAlive;
+        if ( this.heavyWounds >= 3 ) {
+           this.isAlive = false;
         };
-        if ( this.deadlyWounds === 1 ) {
-            this.isAlive = false;
-            return this.isAlive;
+        if ( this.deadlyWounds >= 1 ) {
+           this.isAlive = false;
         }; 
     };
 
-    
     this.expirience = 0;
     this.rank = 1;
     this.displayedRank = "Rookie";
@@ -133,55 +125,70 @@ function Humanoid ( name, weapon, armor, weaponToEquip ) {
             this.rank = 1;
             this.displayedRank = "Rookie"
             this.maxHealth = 30;
-            return;
         } else if ( this.expirience >= 20 && this.expirience <= 49 ) {
             this.rank = 2;
             this.displayedRank = "Skilled";
             this.maxHealth = 35;
-            return;
         } else if ( this.expirience >= 50 && this.expirience <= 99 ) {
             this.rank = 3;
             this.displayedRank = "Veteran";
             this.maxHealth = 40;
-            return;
         } else {
             this.rank = 4;
             this.displayedRank = "Master";
             this.maxHealth = 45;
-            return;
         }   
     };
-  
 };
-
 
 // навешиваем на бодипартс листенеры со счетчикоммм
 // СЧЕТЧИК РАН НА ЗАМЫКАНИИ ЫЫЫЫЫЫЫЫЫЫЫЫЫЫ БЛЯ
 
-
 // КОНСТРУКТОР ОРУЖИЯ
-function Weapon ( name ) {
+function Pistol ( name ) {
     this.name = name;
     this.type = "pistol";
     this.capacity = 3;
     // this.weaponCapacity = 3;
     // должно заполнять количество слотов в массиве(или просто в переменной считается) weaponCapacity в объекте игрока
     this.oneHanded = true;
+    this.isJammed = false;
     this.size = 1;
     // количество слотов в массиве предметов Inventory
     this.availability = 1;
     this.availabilityDisplay = "for Rookie";
-    this.damage = 3;
-    this.accuracy = 0;
+    this.damage = 2;
+    this.accuracy = -1;
     this.jamming = 0;
-    // this.takeAShot = function () {
-    //     if (this.shotPermission() == true) {
+};
 
-    //     } else {
-    //         alert("Shot has been failed.")
-    //     }
-    // }
+function Smg ( name ) {
+    this.name = name;
+    this.type = "smg";
+    this.capacity = 3;
+    this.oneHanded = true;
+    this.isJammed = false;
+    this.size = 1;
+    this.availability = 1;
+    this.availabilityDisplay = "for Rookie";
+    this.damage = 2;
+    this.accuracy = -1;
+    this.jamming = 0;
+};
 
+function Shotgun ( name ) {
+    this.name = name;
+    this.type = "shotgun";
+    this.capacity = 4;
+    this.oneHanded = false;
+    this.isJammed = false;
+    this.size = 1;
+    this.availability = 1;
+    this.availabilityDisplay = "for Rookie";
+    this.damage = 3;
+    this.accuracy = -3;
+    this.accuracy = -2;
+    this.jamming = 0;
 };
 
 // КОНСТРУКТОР БРОНИ
@@ -190,14 +197,14 @@ function Armor ( name ) {
     // this.availability = 1;
     // this.availabilityDisplay = "for Rookie";
     this.defence = 1;
-    // для разных частей тела физ защиту реализовать
+    // для разных частей тела физ защиту реализовать прямо тут?
     this.chemDefence = 1;
 }
 
 function Inventory ( item ) {
     this.items = {};
     this.items = [];
-    // тут методы itemRemove() и item(add) должны пихать и доставать из массива(объекта) размером 9 итемы
+    // тут методы itemRemove() и itemAdd()) должны пихать и доставать из массива(объекта) размером 9 итемы
     // сделать проверку if items length == 9 мы блокируем добавление нвых итемов
 }
 
