@@ -66,8 +66,6 @@ function randShot (attPlayer, defPlayer, randomWound) {
     }
 
     checkWoundsCondition(defPlayer, dmgBodypart, paintWound);
-        //запускаем метод, считающий штрафы от ран внутри объекта   
-        defPlayer.changeAccuracy();
     attPlayer.checkRank(2);
     defPlayer.checkRank(1);
     showHealth ();
