@@ -2,19 +2,34 @@
 //создание экземпляров оружия и брони
 let startingArmor = new Armor ("jacket");
 
-let makarov = new Pistol ("Makarov gun");
-let shortBarrel = new Shotgun ("Shortbarrel shotgun");
-let uzi = new Smg ("UZI")
+let makarov = new Makarov ("Makarov gun");
+let remington = new Remington870("Remington-870")
+let uzi = new UZI ("UZI")
+let shortBarrel = new Shortbarrel ("Shortbarrel shotgun");
 //создание 2 оппонентов (левого и правого - названо для удобства разработки)
 let leftPlayer = new Humanoid("Bandit", uzi, startingArmor);
-let rightPlayer = new Humanoid("Soldier", shortBarrel, startingArmor);
+let rightPlayer = new Humanoid("Soldier", remington, startingArmor);
 
 let target = document.querySelectorAll( '.bodyparts' );
 let targets = Array.from( target );
 
-// спрашиваем имя игроков, переделать потом в модальное окно
-leftPlayer.name = prompt("Введите имя левого игрока", "Bandit");
-rightPlayer.name = prompt("Введите имя правого игрока", "Soldier");
+// берем кнопки левого и правого оппонента и навешиваем на них листенеры для начала стрельбы
+const leftShot = document.querySelector ('.opponent_1_shot');
+const rightShot = document.querySelector ('.opponent_2_shot');
+// запускаем рандомайзер для рандомного выстрела по противнику для левого игрока,
+// если он удачный, то совершается выстрел в рандомную часть тела праавого игркоа из текущего оружия левого
+leftShot.addEventListener('click', () => {
+    let random = randomizerLeft();
+    accRoll(leftPlayer, rightPlayer, random);
+});
+// запускаем рандомайзер для рандомного выстрела по противнику
+rightShot.addEventListener('click', () => {
+    let random = randomizerLeft();
+    accRoll(rightPlayer, leftPlayer, random);
+});
+// // спрашиваем имя игроков, переделать потом в модальное окно
+// leftPlayer.name = prompt("Введите имя левого игрока", "Bandit");
+// rightPlayer.name = prompt("Введите имя правого игрока", "Soldier");
 // TODO: сделать модальное окно, возникающее в самом начале, где нужно выбрать кто будет стрелять первым(левый оппонент или правый).
 // в зависимости от выбора убираем опасити или как-то наоборот выделяем того, кто должен стрелять
 
@@ -44,6 +59,11 @@ healButton.addEventListener('click', () => {
     rightPlayer.heavyWounds = 0;
     leftPlayer.dmgTaken = [0,0,0,0,0,0];
     rightPlayer.dmgTaken = [0,0,0,0,0,0];
+    // тестим механику хила
+    leftPlayer.changeHealth(0);
+    rightPlayer.changeHealth(0);
+    leftPlayer.currentHealth = leftPlayer.maxHealth;
+    rightPlayer.currentHealth = rightPlayer.maxHealth;
     for ( let i = 0; i <= 5; i++ ) {
         let j = i;
         checkWoundsCondition ( leftPlayer , i , j );  
@@ -52,11 +72,9 @@ healButton.addEventListener('click', () => {
         let j = i+6;
         checkWoundsCondition ( rightPlayer , i , j );  
     }
-    leftPlayer.currentHealth = leftPlayer.maxHealth;
-    rightPlayer.currentHealth = rightPlayer.maxHealth;
     alert("Боги желают продолжения битвы!")
     console.log("Боги желают продолжения битвы!")
-    return;
+    // return;
 });
 // кнопка рандомайзер, решающая, кто стреляет первым
 document.querySelector('.randomizer').addEventListener('click', () => {

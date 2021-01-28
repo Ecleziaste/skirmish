@@ -42,11 +42,13 @@ body {
 .wrapper {
     display: flex;
     flex-flow: row wrap;
+    /* height: 600px; */
     /* justify-content: space-evenly; */
 }
 .battlefield {
     width: 100%;
-    margin: 0 100px;
+    /* height: 500px; */
+    margin: 0 auto;
     display: flex;
     flex-flow: row wrap;
     justify-content: space-evenly;
@@ -63,7 +65,7 @@ body {
     background: no-repeat center/60% url("../img/right.jpg");
 }
 .opponent_1 , .opponent_2 {
-    width: 30%;
+    width: 24%;
     height: 500px;
     display: flex;
     flex-flow: column wrap;
@@ -73,36 +75,78 @@ body {
     border-radius: 4px;
     padding: 5px;
 }
-.opponent_1_panel , .opponent_2_panel {
-    /* width: 35%; */
-    /* height: 30%; */
-    height: 40%;
+.opponent_1_panel, .opponent_2_panel {
+    width: 16%;
+    height: 90%;
     display: flex;
-    flex-flow: column wrap;
+    flex-flow: row wrap;
     justify-content: space-around;
     align-items: center;
-    /* align-self: center; */
     border: #573917e8 10px solid;
-    /* border-radius: 4px; */
     padding: 5px;
 }
+/* .opponent_1_panel {
+    justify-content: flex-end;
+} */
 .panel {
     background: #637c65;
     border: rgb(130, 111, 0) 2px solid;
     border-radius: 5px;
     margin: 4px;
     padding: 4px;
-    transition: background 0.1s linear;
 }
 .panel:hover {
-    
+    transition: background 0.2s linear;
     background: #506452;
     cursor: pointer;
 }
-.panel:active {
-    
-    background-color: #9c0000;;
+.panel_active:active {
+    transition: background 0.05s linear;
+    background: #9c0000;;
+    /* opacity: 0.8; */
+}
+.opponent_1_shot, .opponent_2_shot {
+    border: #c4400b 5px solid;
+    margin: 5px;
+    padding: 5px;
+    font-size: 30px;
+}
+/* заставить кнопку с выстрелом каждого прилипнуть ближе к изображению персонажа */
+.opponent_1_shot {
+    /* align-self: flex-start; */
+    justify-self: flex-end;
+}
+.opp_1_stats, .opp_2_stats {
+    /* border: rgb(130, 111, 0) 2px solid; */
+    /* сделать по контенту ширину и высоту, когда данные будут заполнены */
+    height: 40%;
+    width: 96%;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: flex-end;
+    align-items: center;
+}
+.opp_1_stats {
+    justify-content: flex-start;
+}
+.stats {
+    /* модель 5х2 */
+    /* height: 22%;
+    width: 14%; */
+    height: 22%;
+    width: 30%;
+    margin: 1px;
+    /* padding: 1px; */
+    border: rgb(68, 66, 43) 2px solid;
     opacity: 0.8;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: flex-start;
+    /* align-items: flex-start; */
+}
+.inner_text {
+    display: inline-block;
+    color: #74149b;
 }
 .bodyparts {
     border: #00820b 2px solid;

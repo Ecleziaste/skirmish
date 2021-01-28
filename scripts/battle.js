@@ -1,21 +1,11 @@
 'use strict';
-// берем кнопки левого и правого оппонента и навешиваем на них листенеры для начала стрельбы
-const leftShot = document.querySelector ('.opponent_1_shot');
-const rightShot = document.querySelector ('.opponent_2_shot');
-// запускаем рандомайзер для рандомного выстрела по противнику для левого игрока,
-// если он удачный, то совершается выстрел в рандомную часть тела праавого игркоа из текущего оружия левого
-leftShot.addEventListener('click', () => {
-    let random = randomizerLeft();
-    accRoll(leftPlayer, rightPlayer, random);
-});
-// запускаем рандомайзер для рандомного выстрела по противнику
-rightShot.addEventListener('click', () => {
-    let random = randomizerLeft();
-    accRoll(rightPlayer, leftPlayer, random);
-});
+// FUNCTIONS
 // функция стрельбы(сначала счиает меткость, затем производит прицельный выстрел или от бердра ткущим оружием атакующего игрока через броню защищающегося)
 function accRoll(attPlayer, defPlayer, randomWound) {
     let totalAcc = Math.floor(Math.random()*6 + 1) + attPlayer.accuracy + attPlayer.currentWeapon.accuracy;
+    // можно сделать стандартную меткость персонажей = 2 и добавить Math.floor(attPlayer.accuracy), для более драматического влияния попаданий
+    // на меткость, но после достижения нуля это может работать в обратном направлении, ибо Math.floor() округляет до ближайшего наименьшего целого?
+    // хотя, -2 < -1 < 0 , need a test
     if ( totalAcc >= 5 ) {
         alert("You can choose where to shoot -_-" + "\nПрицельная стрельба!")
         if (attPlayer.currentWeapon.type == "smg") {
@@ -68,9 +58,10 @@ function randShot (attPlayer, defPlayer, randomWound) {
     checkWoundsCondition(defPlayer, dmgBodypart, paintWound);
     attPlayer.checkRank(2);
     defPlayer.checkRank(1);
-    showHealth ();
+    defPlayer.changeAccuracy(0);
+    defPlayer.changeHealth(0);
+    showHealth();
     checkVictory(); 
-    return;
 };
 
 // работа прицельных выстрелов. ф-ия НЕ читалась из battle.js
@@ -85,6 +76,8 @@ function aimShot (attPlayer, defPlayer, i) {
 
     attPlayer.checkRank(2);
     defPlayer.checkRank(1);
+    defPlayer.changeAccuracy(0);
+    defPlayer.changeHealth(0);
     showHealth();
     checkVictory();
 };
@@ -108,83 +101,10 @@ function checkWoundsCondition (that , i , j) {
         that.heavyWounds += 1;
         // that.checkCondition(0);
         checkVictory();
+        // проверяем на победу, ибо 3 тяжелые раны приравниваются к смерти
     }
-    that.changeAccuracy(0);
-    // // повреждения торса
-    // if (that.dmgTaken[2] == 0) {
-    //     that.accuracy = that.defaultAccuracy + that.modAccuracy;
-    // } else if (that.dmgTaken[2] >= 4 && that.dmgTaken[0] <= 6) {
-    //     that.accuracy = that.defaultAccuracy + that.modAccuracy -(0.5);
-    //     console.log(that.accuracy)
-    // } else if (that.dmgTaken[2] >= 7) {
-    //     that.accuracy = that.defaultAccuracy + that.modAccuracy -1;
-    //     console.log(that.accuracy)
-    // }
-    // // повреждения правой и левой ног
-    // if (that.dmgTaken[4] == 0) {
-    //     that.accuracy = that.defaultAccuracy + that.modAccuracy;
-    // } else if (that.dmgTaken[4] >= 4 && that.dmgTaken[0] <= 6) {
-    //     that.accuracy = that.defaultAccuracy + that.modAccuracy -(0.5);
-    //     console.log(that.accuracy)
-    // } else if (that.dmgTaken[4] >= 7) {
-    //     that.accuracy = that.defaultAccuracy + that.modAccuracy -1;
-    //     console.log(that.accuracy)
-    // }
-
-    // if (that.dmgTaken[5] == 0) {
-    //     that.accuracy = that.defaultAccuracy + that.modAccuracy;
-    // } else if (that.dmgTaken[5] >= 4 && that.dmgTaken[0] <= 6) {
-    //     that.accuracy = that.defaultAccuracy + that.modAccuracy -(0.5);
-    //     console.log(that.accuracy)
-    // } else if (that.dmgTaken[5] >= 7) {
-    //     that.accuracy = that.defaultAccuracy + that.modAccuracy -1;
-    //     console.log(that.accuracy)
-    // }
-
 };
-// function changeAccuracy (that) {
-    
-//     let modAccuracyHead = 0;
-//     let modAccuracyRightHand = 0;
-//     let modAccuracyLeftHand = 0;
-//     // повреждения головы
-//     if (that.dmgTaken[0] == 0) {
-//         modAccuracyHead = 0;
-//         console.log(that.accuracy);  
-//     } else if (that.dmgTaken[0] >= 4 && that.dmgTaken[0] <= 6) {
-//         modAccuracyHead = -0.5;
-//         console.log(that.accuracy);
-//     } else if (that.dmgTaken[0] >= 7) {
-//         modAccuracyHead = -1;
-//         console.log(that.accuracy)
-//     }   
-    
-//     // повреждения правой и левой рук
-//     if (that.dmgTaken[1] == 0) {
-//         modAccuracyRightHand = 0;
-//         // console.log(that.accuracy);
-//     } else if (that.dmgTaken[1] >= 4 && that.dmgTaken[0] <= 6) {
-//         modAccuracyRightHand = -0.25;
-//         // console.log(that.accuracy)
-//     } else if (that.dmgTaken[1] >= 7) {
-//         modAccuracyRightHand = -0.5;
-//         // console.log(that.accuracy)
-//     }
 
-//     if (that.dmgTaken[3] == 0) {
-//         modAccuracyLeftHand = 0;
-//         // console.log(that.accuracy);
-//     } else if (that.dmgTaken[3] >= 4 && that.dmgTaken[0] <= 6) {
-//         modAccuracyLeftHand = -0.25;
-//         // console.log(that.accuracy);
-//     } else if (that.dmgTaken[3] >= 7) {
-//         modAccuracyLeftHand = -0.5;
-//         // console.log(that.accuracy);
-//     }
-
-//     modAccuracy = modAccuracyHead + modAccuracyRightHand + modAccuracyLeftHand;
-//     return that.accuracy += modAccuracy;
-// };
 //получаем рандомное число от 0 до 5
 function randomizerLeft () {
     let number = Math.floor(Math.random()*6 + 0);
