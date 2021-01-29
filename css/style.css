@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=East+Sea+Dokdo&display=swap');
 
+/*FIXME: Кажется, бывают неэффективные клики по кнопек выстрела из-за верстки? */
 /* * {
     border: #9c0000 1px solid;
 } */
@@ -85,9 +86,6 @@ body {
     border: #573917e8 10px solid;
     padding: 5px;
 }
-/* .opponent_1_panel {
-    justify-content: flex-end;
-} */
 .panel {
     background: #637c65;
     border: rgb(130, 111, 0) 2px solid;
@@ -111,11 +109,11 @@ body {
     padding: 5px;
     font-size: 30px;
 }
-/* заставить кнопку с выстрелом каждого прилипнуть ближе к изображению персонажа */
-.opponent_1_shot {
-    /* align-self: flex-start; */
+/* TODO: заставить кнопку с выстрелом каждого прилипнуть ближе к изображению персонажа */
+/* .opponent_1_shot {
+    align-self: flex-start;
     justify-self: flex-end;
-}
+} */
 .opp_1_stats, .opp_2_stats {
     /* border: rgb(130, 111, 0) 2px solid; */
     /* сделать по контенту ширину и высоту, когда данные будут заполнены */
@@ -123,30 +121,41 @@ body {
     width: 96%;
     display: flex;
     flex-flow: row wrap;
-    justify-content: flex-end;
+    justify-content: flex-start;
     align-items: center;
 }
 .opp_1_stats {
-    justify-content: flex-start;
+    justify-content: flex-end;
+}
+.opp_2_stats {
+    flex-flow: row-reverse wrap;
+    justify-content: flex-end;
 }
 .stats {
     /* модель 5х2 */
     /* height: 22%;
-    width: 14%; */
-    height: 22%;
+    width: 14%; */ 
+    /* display: inline-flex; */
+    height: 24%;
     width: 30%;
     margin: 1px;
-    /* padding: 1px; */
     border: rgb(68, 66, 43) 2px solid;
     opacity: 0.8;
-    display: flex;
-    flex-flow: column nowrap;
-    justify-content: flex-start;
-    /* align-items: flex-start; */
+    line-height: 0.6;
+    overflow-wrap: break-word;
+    quotes: "\00ab" "\00bb";
+    /* text-align: left; */
+    /* text-align: start end; */
+    /* text-align: justify; */
 }
 .inner_text {
-    display: inline-block;
+    position: absolute;
+    left: 0;
+    top: 0;
+    text-align: left;
     color: #74149b;
+    margin: 0;
+    padding: 0;
 }
 .bodyparts {
     border: #00820b 2px solid;
@@ -166,6 +175,7 @@ body {
     opacity: 0.9;
     box-shadow: 0px 0px 50px #720000;
 }
+/* wounds colors */
 .low_wound{
     background-color: #eff314;
 }
@@ -181,6 +191,7 @@ body {
     background-color: #3f0000;
     /* background-color: #720000; */
 }
+/* targets structure */
 .opponent_1_top , .opponent_2_top {
     width: 10%;
     display: flex;

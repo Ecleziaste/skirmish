@@ -66,6 +66,7 @@ function randShot (attPlayer, defPlayer, randomWound) {
 
 // работа прицельных выстрелов. ф-ия НЕ читалась из battle.js
 function aimShot (attPlayer, defPlayer, i) {
+    let bodypart = i;
     let dmg = attPlayer.currentWeapon.damage - defPlayer.armor.defence;
         if (dmg <= 0) {
             dmg = 1;
@@ -73,7 +74,7 @@ function aimShot (attPlayer, defPlayer, i) {
     defPlayer.checkCondition(-dmg);
     attPlayer.checkCondition(0);
     defPlayer.dmgTaken[i] += dmg;
-
+ 
     attPlayer.checkRank(2);
     defPlayer.checkRank(1);
     defPlayer.changeAccuracy(0);
@@ -98,9 +99,11 @@ function checkWoundsCondition (that , i , j) {
     if (that.dmgTaken[i] >= 7) {
         targets[j].classList.add('heavy_wound');
         targets[j].classList.remove('low_wound', 'medium_wound');
-        that.heavyWounds += 1;
+        // that.heavyWounds += 1;
+        // как добавить в объект heavyWounds += 1 ЕДИНОЖДЫ? Мб переделать всё же отрисовку ран для каждого игрока(разделить массив targets на 2 разных массива и брать оттуда инфу)
+        //FIXME:   !!  This is Brutal mode - смерть при двух попаданиях в тяжелую рану  !!  следует вынести в ф-ию
         // that.checkCondition(0);
-        checkVictory();
+        checkVictory(); 
         // проверяем на победу, ибо 3 тяжелые раны приравниваются к смерти
     }
 };
@@ -119,19 +122,15 @@ function randomizerRight () {
 function checkVictory () {
     leftPlayer.checkCondition(0);
     rightPlayer.checkCondition(0);
+// FIXME: мб не стоит тут вызывать?
     if (leftPlayer.isAlive == false) {
         alert(rightPlayer.name + " is victorious!")
     } else if (rightPlayer.isAlive == false) {
         alert(leftPlayer.name + " is victorious!")
     }
-    //  else {
-    //     alert(leftPlayer.currentHealth + " - " + rightPlayer.currentHealth + " \nKeep fighting!")
-    // }
 };
 
 function showHealth () {
-    // leftPlayer.checkCondition(0);
-    // rightPlayer.checkCondition(0);
     alert(leftPlayer.name + ' with ' + leftPlayer.currentWeapon.name + ' HP = ' + leftPlayer.currentHealth + " \nvs "
      + "\n" + rightPlayer.name + ' with ' + rightPlayer.currentWeapon.name + ' HP = ' + rightPlayer.currentHealth + " \nKeep fighting!");
 };

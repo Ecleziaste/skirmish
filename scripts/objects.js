@@ -16,53 +16,67 @@ function Humanoid ( name, weapon, armor, items, weaponToEquip, itemToEquip, item
     this.currentWeapon = weapon;
     // начальная точность персонажа, относительно постоянная величина 
     this.defaultAccuracy = 1;
-    // модифицировання точность от ран или в ходе боя, временные модификаторы плюсуются сюда же(сделать более независимой о)
-    this.modAccuracy = 0;
+    // эта величина накапливает постоянные плюсы-минусы к точности
+    this.accPermaModifier = 0;
+    // модифицировання точность от ран или в ходе боя, временные модификаторы боя плюсуются сюда же
+    this.modifiedAccuracy = 0;
     // фактическая точность
-    this.accuracy = this.defaultAccuracy + this.modAccuracy;
-    // this.modAccuracyHead = 0;
-    // this.modAccuracyRighthand = 0;
-    // this.modAccuracyLeftHand = 0;
+    this.accuracy = this.defaultAccuracy + this.accPermaModifier + this.modifiedAccuracy;
     this.changeAccuracy = function (modifier) {
         // вызывать каждый раз, когд что-то влияет на точность?
+        // modifier для красткосрочных событий в бою
         let modAccuracyHead = 0;
         let modAccuracyRightHand = 0;
         let modAccuracyLeftHand = 0;
         // проверка повреждений головы
+        // FIXME:  проверка на тяжелораненую голову и дополнительный  урон 3, если голова тяжело повреждена
+        // if ( this.dmgTaken[0] > 7 && this.heavyWounds >= 1 ) {
+        //     // this.checkCondition(-3);
+        //     // checkVictory();
+        // };
+        
         if (this.dmgTaken[0] == 0) {
             modAccuracyHead = 0; 
         } else if (this.dmgTaken[0] >= 4 && this.dmgTaken[0] <= 6) {
             modAccuracyHead = -0.5;
         } else if (this.dmgTaken[0] >= 7) {
             modAccuracyHead = -1;
-        }   
+            //FIXME: дополнительный дамаг 1 от попадания в тяжелораненую голову(происходит на эатпе нанесения урона, приводящему у тяжелому ранению)
+            // this.checkCondition(-1);
+        }
+
         // повреждения правой и левой рук
+        // if ( this.dmgTaken[1] > 7 && this.heavyWounds >= 1 ) {
+        //     // this.currentHealth -= 5;
+        //     this.checkCondition(-1);
+        //     // checkVictory();
+        // }
         if (this.dmgTaken[1] == 0) {
             modAccuracyRightHand = 0;
-            // console.log(this.accuracy);
         } else if (this.dmgTaken[1] >= 4 && this.dmgTaken[1] <= 6) {
             modAccuracyRightHand = -0.25;
-            // console.log(this.accuracy)
         } else if (this.dmgTaken[1] >= 7) {
             modAccuracyRightHand = -0.5;
-            // console.log(this.accuracy)
         }
+
+        // if ( this.dmgTaken[3] > 7 && this.heavyWounds >= 1 ) {
+        //     // this.currentHealth -= 5;
+        //     this.checkCondition(-1);
+        //     // checkVictory();
+        // }
         if (this.dmgTaken[3] == 0) {
             modAccuracyLeftHand = 0;
-            // console.log(this.accuracy);
         } else if (this.dmgTaken[3] >= 4 && this.dmgTaken[3] <= 6) {
             modAccuracyLeftHand = -0.25;
-            // console.log(this.accuracy);
         } else if (this.dmgTaken[3] >= 7) {
             modAccuracyLeftHand = -0.5;
-            // console.log(this.accuracy);
         }
     
         let modAccuracy = modAccuracyHead + modAccuracyRightHand + modAccuracyLeftHand;
         // чтобы переменная в объекте изменялась, возможно будут и другие источники изменения модифицированной точности(перки, дебаффы)
-        this.modAccuracy = modAccuracy + modifier;
+        this.modifiedAccuracy = modAccuracy + modifier;
         // считаем модифицированную точность и складываем её с начальной точнотсью персонажа, тем самым пересчитыая фактическую точность
-        this.accuracy = this.defaultAccuracy + this.modAccuracy;
+        this.accuracy = this.defaultAccuracy + this.accPermaModifier + this.modifiedAccuracy;
         // на defaultAccuracy в свою очередь будут влиять перки и другие постоянные модификаторы
     };
 
@@ -117,37 +131,42 @@ function Humanoid ( name, weapon, armor, items, weaponToEquip, itemToEquip, item
     // 1 малогабаритное и 1 крупногабаритное.
     // метод стрельбы. берет урон из current weapon + модификаторы и отнибает из него бронь,
     //  полученное значение: прибавляется в часть тела куда стреляли; отнимает здоровье из currentHealth
+    this.defaultHealth = 30;
+    this.healthPermaModifier = 0;
     this.modifiedHealth = 0;
-    this.startingHealth = 30;
-    this.maxHealth = this.startingHealth + this.modifiedHealth;
+    this.maxHealth = this.defaultHealth + this.healthPermaModifier + this.modifiedHealth;
     this.currentHealth = this.maxHealth;
-    // this.currentHealth = this.maxHealth + this.modifiedHealth;
     // УЧЕСТЬ УВЕЛИЧИВАЕМОЕ ЗДОРОВЬЕ от первков и лвлАПА
     this.changeHealth = function(modifier) {
         let modHealth = 0;
-        // проверка повреждений торса
-        // раны влияют на максимальное здоровье персонажа
-        // нанесение урона в средне-тяжелораненом состоянии дополнительно снижает здоровье на 1 
+        // проверка повреждений торса. раны влияют на максимальное здоровье персонажа
+        // нанесение урона в средне-тяжелораненом состоянии дополнительно снижает здоровье на 1/2
+        // влияние на здоровье
+        // if ( this.dmgTaken[2] > 4 && this.dmgTaken[2] <= 6 && this.heavyWounds >= 1 ) {
+        //     // this.currentHealth -= 5;
+        //     this.checkCondition(-1);
+        //     // checkVictory();
+        // }
+        // if ( this.dmgTaken[2] > 7 && this.heavyWounds >= 1 ) {
+        //     // this.currentHealth -= 5;
+        //     this.checkCondition(-2);
+        //     // checkVictory();
+        // } 
+        // влияние на максимальное здоровье
         if (this.dmgTaken[2] == 0) {
             modHealth = 0;
-            this.checkCondition(0);
-            console.log(this.currentHealth);
-            console.log(this.maxHealth);
+            // this.checkCondition(0);
         } else if (this.dmgTaken[2] >= 4 && this.dmgTaken[2] <= 6) {
             modHealth = -2.5;
-            this.checkCondition(-1);
-            console.log(this.currentHealth);
-            console.log(this.maxHealth);
+            // this.checkCondition(-1);
         } else if (this.dmgTaken[2] >= 7) {
             modHealth = -5;
-            this.checkCondition(-1);
-            console.log(this.currentHealth);
-            console.log(this.maxHealth);
+            // this.checkCondition(-2);
+            // console.log(this.currentHealth);
+            // console.log(this.maxHealth);
         }
         this.modifiedHealth = modHealth + modifier;
-        this.maxHealth = this.startingHealth + this.modifiedHealth;
-        // this.maxHealth += this.modifiedHealth;
-        // this.currentHealth = this.maxHealth + this.modifiedHealth;
+        this.maxHealth = this.defaultHealth + this.healthPermaModifier + this.modifiedHealth ;
     };
 
     this.isAlive = true;
@@ -159,25 +178,28 @@ function Humanoid ( name, weapon, armor, items, weaponToEquip, itemToEquip, item
     //     leftHand : 0,
     //     rightLeg : 0,
     //     leftLeg : 0,
-    // };
-
-    // + снижать this.move -= 1 за тяжелые ранения ног и шанс сбежать из боя в runawayRoll()
-    //  цикл с условиями (МБ ТУТ ПРЕВРАЩАТЬ ОБЪЕКТ В МАССИВ а возвращать значения объекта?)
-    // ХОТЯ всё равно надо бдует манипулировать классами разных частей тела разных оппонентов, пока сойдет повторяющийся код
-    
+    // }; 
+    // this.heavyWoundsCount = 0;
     this.heavyWounds = 0;
-    // смертельная рана - становится 1, когда попадают в тяжелую рану(убивает игрока) метод brutalDeath() {return defendingPlayer.isAlive = false;}
-    // можно сделать просто +5 к дамагу, если попали в тяжелую рану еще раз(это лучше тестить, когда будет доступно леченеи бинтами и аптечками, стимуляторами)
-    // метод brutalDamage() {return defendingPlayer.currentHealth -= 5;}
     this.deadlyWounds = 0;
-    // проверка состояния игрока после событий
+    // проверка состояния здоровья игрока после событий
     this.checkCondition = function ( hp ) {
         this.currentHealth += hp;
+        let heavyWoundsCount = 0;
+        // создаем счетчик тяжелых ран, ищем их и отправляем данные в характеристики объекта
+        for (let i = 0; i <= 5; i++) { 
+            if (this.dmgTaken[i] >= 7) {
+                heavyWoundsCount++;
+            }
+        };
+        this.heavyWounds = heavyWoundsCount;
+        
         if ( this.currentHealth > this.maxHealth ) {
             this.currentHealth = this.maxHealth;
             // this.currentHealth = this.maxHealth + this.modifiedHealth;
         };
         if ( this.currentHealth <= 0 ) {
+            // if (this.currentHealth <= -5) {тут вызываем ф-ию с анимацией обильного кровотечения};
             this.isAlive = false;
         };
         if ( this.currentHealth > 0 ) {
@@ -186,7 +208,14 @@ function Humanoid ( name, weapon, armor, items, weaponToEquip, itemToEquip, item
         if ( this.heavyWounds >= 3 ) {
             this.isAlive = false;
         };
+        // проверка на наличие смертельной раны
+        for (let i = 0; i <= 5; i++){
+            if (this.dmgTaken[i] >= 20) {
+                this.deadlyWounds = 1;
+            }
+        };
         if ( this.deadlyWounds >= 1 ) {
+             // тут запускаем ф-ию с отрыванием части тела
             this.isAlive = false;
         }; 
     };
@@ -203,26 +232,29 @@ function Humanoid ( name, weapon, armor, items, weaponToEquip, itemToEquip, item
     //         // прервать выполнение ф-ии, которая осуществляет бросок на выстрел
     //     }
     // };
-    // TODO: и восстанавливается здоровье до текущей величины, воздействуя на currentHealth ?
+    // TODO:  Добавить плюсики к move и асс возможно, + увеличение носимого инвентярая на 1? всё может улучшаться перками,
+    //  которые будут лежать в объекте и влиять на характеристики. если есть сервак, где хранится состояние объекта, можно использовать
+    // лежащие внутри перки только для отображения иконок и общих статов персонажа - в списке эффектов, на него наложенных
     this.checkRank = function ( xp ){
         this.expirience += xp;
+        //  можно восстанавливать здоровье до максимальной величины при лвлапе(как в волшебных мирах), воздействуя на currentHealth 
         // влияние на максимальное здоровье персонажа
         if ( this.expirience <= 19 ) {
             this.rank = 1;
             this.displayedRank = "Rookie"
-            this.startingHealth = 30;
+            this.defaultHealth = 30;
         } else if ( this.expirience >= 20 && this.expirience <= 49 ) {
             this.rank = 2;
             this.displayedRank = "Skilled";
-            this.startingHealth = 35;
+            this.defaultHealth = 35;
         } else if ( this.expirience >= 50 && this.expirience <= 99 ) {
             this.rank = 3;
             this.displayedRank = "Veteran";
-            this.startingHealth = 40;
+            this.defaultHealth = 40;
         } else {
             this.rank = 4;
             this.displayedRank = "Master";
-            this.startingHealth = 45;
+            this.defaultHealth = 45;
         }   
     };
 };
@@ -283,14 +315,12 @@ function Remington870 ( name ) {
     this.capacity = 4;
     this.oneHanded = false;
     this.isJammed = false;
+    this.jammingChance = 0;
     this.size = 1;
     this.availability = 1;
     this.availabilityDisplay = "for Rookie";
     this.damage = 3;
     this.accuracy = -2;
-    this.jamming = 0;
-    // -3 accuracy against humanoids
-    // -2 accuracy against monsters
 };
 
 

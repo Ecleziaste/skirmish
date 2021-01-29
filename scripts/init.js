@@ -8,7 +8,7 @@ let uzi = new UZI ("UZI")
 let shortBarrel = new Shortbarrel ("Shortbarrel shotgun");
 //создание 2 оппонентов (левого и правого - названо для удобства разработки)
 let leftPlayer = new Humanoid("Bandit", uzi, startingArmor);
-let rightPlayer = new Humanoid("Soldier", remington, startingArmor);
+let rightPlayer = new Humanoid("Soldier", shortBarrel, startingArmor);
 
 let target = document.querySelectorAll( '.bodyparts' );
 let targets = Array.from( target );
@@ -27,9 +27,11 @@ rightShot.addEventListener('click', () => {
     let random = randomizerLeft();
     accRoll(rightPlayer, leftPlayer, random);
 });
-// // спрашиваем имя игроков, переделать потом в модальное окно
+
+// // спрашиваем имя игроков, переделать потом в модальное окно или по клику на имени в диве статов
 // leftPlayer.name = prompt("Введите имя левого игрока", "Bandit");
 // rightPlayer.name = prompt("Введите имя правого игрока", "Soldier");
+
 // TODO: сделать модальное окно, возникающее в самом начале, где нужно выбрать кто будет стрелять первым(левый оппонент или правый).
 // в зависимости от выбора убираем опасити или как-то наоборот выделяем того, кто должен стрелять
 
@@ -39,7 +41,7 @@ for ( let i = 0; i <= 5; i++ ) {
     targets[i].addEventListener('click', () => {
         aimShot (rightPlayer, leftPlayer, i);
         let j = i;
-        checkWoundsCondition ( leftPlayer , i , j );
+        setTimeout(checkWoundsCondition ( leftPlayer , i , j ), 0) 
     });
     
 }
@@ -55,15 +57,19 @@ for ( let i = 0; i <= 5; i++ ) {
 // воля богов (хилим всех и обнуляем состояния ран)
 let healButton = document.querySelector( '.heal_all' );
 healButton.addEventListener('click', () => {
-    leftPlayer.heavyWounds = 0;
-    rightPlayer.heavyWounds = 0;
+    // leftPlayer.heavyWounds = 0;
+    // rightPlayer.heavyWounds = 0;
     leftPlayer.dmgTaken = [0,0,0,0,0,0];
     rightPlayer.dmgTaken = [0,0,0,0,0,0];
     // тестим механику хила
     leftPlayer.changeHealth(0);
     rightPlayer.changeHealth(0);
+    leftPlayer.changeAccuracy(0);
+    rightPlayer.changeAccuracy(0);
     leftPlayer.currentHealth = leftPlayer.maxHealth;
     rightPlayer.currentHealth = rightPlayer.maxHealth;
+    leftPlayer.checkCondition(0);
+    rightPlayer.checkCondition(0);
     for ( let i = 0; i <= 5; i++ ) {
         let j = i;
         checkWoundsCondition ( leftPlayer , i , j );  
@@ -74,7 +80,6 @@ healButton.addEventListener('click', () => {
     }
     alert("Боги желают продолжения битвы!")
     console.log("Боги желают продолжения битвы!")
-    // return;
 });
 // кнопка рандомайзер, решающая, кто стреляет первым
 document.querySelector('.randomizer').addEventListener('click', () => {
@@ -112,3 +117,6 @@ healRightHeadBtn.addEventListener('click', () => {
         alert('skull fully cured')
     }
 });
+
+// ДОБАВИТЬ СЧЕТЧИК ХОДОВ. 2 независимых счетчика(shotsMade) на кнопках Take a shot! оппонентов(на замыкании) плюсуются в общий счетчик.
+// пометить уже того, кто сейчас должен стрелять. возможно добавления класса к кнопке выстрела (или мземенеие бордера на огромный бордер, ченить попроще пока что)
