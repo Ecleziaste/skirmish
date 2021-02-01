@@ -2,30 +2,29 @@
 // FUNCTIONS
 // функция стрельбы(сначала счиает меткость, затем производит прицельный выстрел или от бердра ткущим оружием атакующего игрока через броню защищающегося)
 function accRoll(attPlayer, defPlayer, randomWound) {
-    let totalAcc = Math.floor(Math.random()*6 + 1) + attPlayer.accuracy + attPlayer.currentWeapon.accuracy;
+    let totalAcc = ( randomizerZeroFive() + 1)  + attPlayer.accuracy + attPlayer.currentWeapon.accuracy;
     // можно сделать стандартную меткость персонажей = 2 и добавить Math.floor(attPlayer.accuracy), для более драматического влияния попаданий
     // на меткость, но после достижения нуля это может работать в обратном направлении, ибо Math.floor() округляет до ближайшего наименьшего целого?
     // хотя, -2 < -1 < 0 , need a test
     if ( totalAcc >= 5 ) {
-        alert("You can choose where to shoot -_-" + "\nПрицельная стрельба!")
         if (attPlayer.currentWeapon.type == "smg") {
-            alert("Take one more shot at any bodypart")
-        }
-        if (attPlayer.currentWeapon.type == "shotgun") {
-            alert("Take a shot in another bodypart")
-            let randomWound = randomizerLeft();
+            alert("You can shoot TWICE at ANY bodypart -_-" + "\nПрицельная стрельба по ДВУМ ЛЮБЫМ частям тела!")
+        } else if (attPlayer.currentWeapon.type == "shotgun") {
+            alert("Shoot ONCE to ANOTHER bodypart after random shot -_-")
+            let randomWound = randomizerZeroFive();
             randShot(attPlayer, defPlayer, randomWound)
             // реализовать рандомную стрельбу после прицеьного выстрела
+        } else {
+            alert("You can choose where to shoot ONCE -_-" + "\nПрицельная стрельба по ОДНОЙ части тела!")
         }   
     } else if ( totalAcc > 1 && totalAcc <= 4 ) {
         alert("Random shot!" + "\nСтрельба от бедра.");
         randShot(attPlayer, defPlayer, randomWound)
         if (attPlayer.currentWeapon.type == "smg") {
-            let randomWound = randomizerLeft();
+            let randomWound = randomizerZeroFive();
             randShot(attPlayer, defPlayer, randomWound)
-        }
-        if (attPlayer.currentWeapon.type == "shotgun") {
-            let randomWound = randomizerLeft();
+        } else if (attPlayer.currentWeapon.type == "shotgun") {
+            let randomWound = randomizerZeroFive();
             randShot(attPlayer, defPlayer, randomWound)
         }
     } else if ( totalAcc <= 1 ) {
@@ -35,6 +34,7 @@ function accRoll(attPlayer, defPlayer, randomWound) {
 
 // заменить на randShot, внутри создать переменную randomWound и присвоить ей результат работы рандомайзера
 function randShot (attPlayer, defPlayer, randomWound) {
+    defPlayer.hvyWndCheck();
     let dmg = attPlayer.currentWeapon.damage - defPlayer.armor.defence;
         if (dmg <= 0) {
             dmg = 1;
@@ -44,6 +44,7 @@ function randShot (attPlayer, defPlayer, randomWound) {
     attPlayer.checkCondition(0);
     // меняем состояние части тела, куда попала пуля   
     defPlayer.dmgTaken[randomWound] += dmg;
+    defPlayer.additionalDmg(randomWound);
 
     let paintWound = 0;
     let dmgBodypart = 0;
@@ -65,15 +66,16 @@ function randShot (attPlayer, defPlayer, randomWound) {
 };
 
 // работа прицельных выстрелов. ф-ия НЕ читалась из battle.js
-function aimShot (attPlayer, defPlayer, i) {
-    let bodypart = i;
+function aimShot (attPlayer, defPlayer, bodypart) {
+    defPlayer.hvyWndCheck();
     let dmg = attPlayer.currentWeapon.damage - defPlayer.armor.defence;
         if (dmg <= 0) {
             dmg = 1;
         };
     defPlayer.checkCondition(-dmg);
     attPlayer.checkCondition(0);
-    defPlayer.dmgTaken[i] += dmg;
+    defPlayer.dmgTaken[bodypart] += dmg;
+    defPlayer.additionalDmg(bodypart);
  
     attPlayer.checkRank(2);
     defPlayer.checkRank(1);
@@ -108,16 +110,18 @@ function checkWoundsCondition (that , i , j) {
     }
 };
 
+
 //получаем рандомное число от 0 до 5
-function randomizerLeft () {
+function randomizerZeroFive () {
     let number = Math.floor(Math.random()*6 + 0);
     return number;
 }
 //получаем рандомное число от 6 до 11
-function randomizerRight () {
-    let number = Math.floor(Math.random()*6 + 6);
-    return number;
-}
+// function randomizerRight () {
+//     let number = Math.floor(Math.random()*6 + 6);
+//     return number;
+// }
+
 //call after every shot or at low HP 
 function checkVictory () {
     leftPlayer.checkCondition(0);

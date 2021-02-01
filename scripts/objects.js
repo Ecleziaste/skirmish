@@ -1,14 +1,5 @@
 'use strict';
 
-// class Humanoid {
-//     constructor(name) {
-//         this.name = name;
-//         this.health = 20;
-//         this.isAlive = true;
-//         this.rank = "rookie";
-//     }
-// };
-
 // КОНСТРУКТОР ЧЕЛОВЕКООБРАЗНЫХ ПЕРСОНАЖЕЙ
 function Humanoid ( name, weapon, armor, items, weaponToEquip, itemToEquip, itemToInventory, perks ) {
     this.name = name;
@@ -28,29 +19,15 @@ function Humanoid ( name, weapon, armor, items, weaponToEquip, itemToEquip, item
         let modAccuracyHead = 0;
         let modAccuracyRightHand = 0;
         let modAccuracyLeftHand = 0;
-        // проверка повреждений головы
-        // FIXME:  проверка на тяжелораненую голову и дополнительный  урон 3, если голова тяжело повреждена
-        // if ( this.dmgTaken[0] > 7 && this.heavyWounds >= 1 ) {
-        //     // this.checkCondition(-3);
-        //     // checkVictory();
-        // };
-        
+        // проверка повреждений головы 
         if (this.dmgTaken[0] == 0) {
             modAccuracyHead = 0; 
         } else if (this.dmgTaken[0] >= 4 && this.dmgTaken[0] <= 6) {
             modAccuracyHead = -0.5;
         } else if (this.dmgTaken[0] >= 7) {
             modAccuracyHead = -1;
-            //FIXME: дополнительный дамаг 1 от попадания в тяжелораненую голову(происходит на эатпе нанесения урона, приводящему у тяжелому ранению)
-            // this.checkCondition(-1);
         }
-
         // повреждения правой и левой рук
-        // if ( this.dmgTaken[1] > 7 && this.heavyWounds >= 1 ) {
-        //     // this.currentHealth -= 5;
-        //     this.checkCondition(-1);
-        //     // checkVictory();
-        // }
         if (this.dmgTaken[1] == 0) {
             modAccuracyRightHand = 0;
         } else if (this.dmgTaken[1] >= 4 && this.dmgTaken[1] <= 6) {
@@ -59,11 +36,6 @@ function Humanoid ( name, weapon, armor, items, weaponToEquip, itemToEquip, item
             modAccuracyRightHand = -0.5;
         }
 
-        // if ( this.dmgTaken[3] > 7 && this.heavyWounds >= 1 ) {
-        //     // this.currentHealth -= 5;
-        //     this.checkCondition(-1);
-        //     // checkVictory();
-        // }
         if (this.dmgTaken[3] == 0) {
             modAccuracyLeftHand = 0;
         } else if (this.dmgTaken[3] >= 4 && this.dmgTaken[3] <= 6) {
@@ -101,8 +73,6 @@ function Humanoid ( name, weapon, armor, items, weaponToEquip, itemToEquip, item
     //     console.log(that.accuracy)
     // }
     
-  
-
     // текущие очки ходов
     this.move = 4;
     // кол-во ходов по карте. отнимается за передвижение и действия, когда равно нулю - пояляется кнопка ЗАКОНЧИТЬ ХОД(ф-ия передачи хода другому игроку)
@@ -139,31 +109,13 @@ function Humanoid ( name, weapon, armor, items, weaponToEquip, itemToEquip, item
     // УЧЕСТЬ УВЕЛИЧИВАЕМОЕ ЗДОРОВЬЕ от первков и лвлАПА
     this.changeHealth = function(modifier) {
         let modHealth = 0;
-        // проверка повреждений торса. раны влияют на максимальное здоровье персонажа
-        // нанесение урона в средне-тяжелораненом состоянии дополнительно снижает здоровье на 1/2
-        // влияние на здоровье
-        // if ( this.dmgTaken[2] > 4 && this.dmgTaken[2] <= 6 && this.heavyWounds >= 1 ) {
-        //     // this.currentHealth -= 5;
-        //     this.checkCondition(-1);
-        //     // checkVictory();
-        // }
-        // if ( this.dmgTaken[2] > 7 && this.heavyWounds >= 1 ) {
-        //     // this.currentHealth -= 5;
-        //     this.checkCondition(-2);
-        //     // checkVictory();
-        // } 
         // влияние на максимальное здоровье
         if (this.dmgTaken[2] == 0) {
             modHealth = 0;
-            // this.checkCondition(0);
         } else if (this.dmgTaken[2] >= 4 && this.dmgTaken[2] <= 6) {
             modHealth = -2.5;
-            // this.checkCondition(-1);
         } else if (this.dmgTaken[2] >= 7) {
             modHealth = -5;
-            // this.checkCondition(-2);
-            // console.log(this.currentHealth);
-            // console.log(this.maxHealth);
         }
         this.modifiedHealth = modHealth + modifier;
         this.maxHealth = this.defaultHealth + this.healthPermaModifier + this.modifiedHealth ;
@@ -171,14 +123,28 @@ function Humanoid ( name, weapon, armor, items, weaponToEquip, itemToEquip, item
 
     this.isAlive = true;
     this.dmgTaken = [0,0,0,0,0,0];
-    // this.dmgTaken = {
-    //     head : 0,
-    //     rightHand : 0,
-    //     torso : 0,
-    //     leftHand : 0,
-    //     rightLeg : 0,
-    //     leftLeg : 0,
-    // }; 
+    // состояние частей тела(дамаг в них и есть ли тяжелая рана)
+    this.hvyWnd = [false, false, false, false, false, false];
+    // this.hvyWnd = {
+    //     head : false,
+    //     rightHand : false,
+    //     torso : false,
+    //     leftHand : false,
+    //     rightLeg : false,
+    //     leftLeg : false,
+    // };
+    // запускать перед выстрелом, чтобы сработал дополнительный дамаг от попаданий в уже тяжелую рану
+    this.hvyWndCheck = function () {
+        for(let i = 0; i < this.dmgTaken.length; i++) {
+        (this.dmgTaken[i] >= 7) ? this.hvyWnd[i] = true : this.hvyWnd[i] = false;
+        }
+    };
+    // ф-ия дополнительного урона в зависимости от условий(тяжелые раны, облучение, другие дебаффы), запускать после расчета урона от выстрела
+    this.additionalDmg = function (bodypart) {
+        if (this.hvyWnd[bodypart] == true) {
+            this.checkCondition(-3);
+        }
+    };
     // this.heavyWoundsCount = 0;
     this.heavyWounds = 0;
     this.deadlyWounds = 0;
@@ -339,7 +305,7 @@ function Inventory ( item ) {
     this.items = [];
     // this.items = new Array(10); - создает массив с заданной длиной 10; (как её сохранить? иметь эталонную длину в переменной,
     // а длина массива не должна быть больше чем это число, сравинваем при операциях с инвентарем)
-    // тут методы itemRemove() и itemAdd()) должны пихать и доставать из массива(объекта) размером 9 итемы
+    // тут методы itemRemove() и itemAdd() должны пихать и доставать из массива(объекта) размером 10 итемы
     // делать проверку if items length >= 10 мы блокируем добавление нвых итемов?
 }
 //FIXME: ИЛИ
