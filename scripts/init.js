@@ -5,7 +5,7 @@ let startingArmor = new Armor ("jacket");
 let makarov = new Makarov ("Makarov gun");
 let remington = new Remington870("Remington-870")
 let uzi = new UZI ("UZI")
-let shortBarrel = new Shortbarrel ("Shortbarrel shotgun");
+let shortBarrel = new Shortbarrel ("Shortbarrel");
 //создание 2 оппонентов (левого и правого - названо для удобства разработки)
 let leftPlayer = new Humanoid("Bandit", uzi, startingArmor);
 let rightPlayer = new Humanoid("Soldier", shortBarrel, startingArmor);
@@ -21,11 +21,13 @@ const rightShot = document.querySelector ('.opponent_2_shot');
 leftShot.addEventListener('click', () => {
     let random = randomizerLeft();
     accRoll(leftPlayer, rightPlayer, random);
+    showStats();
 });
 // запускаем рандомайзер для рандомного выстрела по противнику
 rightShot.addEventListener('click', () => {
     let random = randomizerLeft();
     accRoll(rightPlayer, leftPlayer, random);
+    showStats();
 });
 
 // // спрашиваем имя игроков, переделать потом в модальное окно или по клику на имени в диве статов
@@ -41,7 +43,8 @@ for ( let i = 0; i <= 5; i++ ) {
     targets[i].addEventListener('click', () => {
         aimShot (rightPlayer, leftPlayer, i);
         let j = i;
-        setTimeout(checkWoundsCondition ( leftPlayer , i , j ), 0) 
+        setTimeout(checkWoundsCondition ( leftPlayer , i , j ), 0);
+        showStats();
     });
     
 }
@@ -51,6 +54,7 @@ for ( let i = 0; i <= 5; i++ ) {
         aimShot (leftPlayer, rightPlayer, i);
         let j = i + 6;
         checkWoundsCondition ( rightPlayer , i , j);
+        showStats();
     });
     
 }
@@ -117,6 +121,47 @@ healRightHeadBtn.addEventListener('click', () => {
         alert('skull fully cured')
     }
 });
+// даем возможность сменить имя игрока, кликнув на поле с именем
+let name_1 = document.querySelector('.opp_1_stats__name');
+let name_2 = document.querySelector('.opp_2_stats__name');
+name_1.addEventListener('click', () => {
+    leftPlayer.name = prompt("Введите имя левого игрока", "Bandit");
+    showStats();
+});
+name_2.addEventListener('click', () => {
+    rightPlayer.name = prompt("Введите имя правого игрока", "Soldier");
+    showStats();
+});
+//отображаем статы персонажей
+function showStats() {
+    let statName_1 = document.querySelector('.opp_1_stats__name').innerText = `name: \n${leftPlayer.name}`;
+    let statArmor_1 = document.querySelector('.opp_1_stats__armor').innerText = `armor: \n${leftPlayer.armor.name}`;
+    let statWeapon_1 = document.querySelector('.opp_1_stats__currentWeapon').innerText = `weapon: \n${leftPlayer.currentWeapon.name}`;
+    let statMove_1 = document.querySelector('.opp_1_stats__move').innerText = `move: \n_${leftPlayer.move}_`;
+    let statAcc_1 = document.querySelector('.opp_1_stats__accuracy').innerText = `Acc: \n_${leftPlayer.accuracy}_`;
+    let statMaxHealth_1 = document.querySelector('.opp_1_stats__maxHealth').innerText = `Max HP: \n_${leftPlayer.maxHealth}_`;
+    let statRank_1 = document.querySelector('.opp_1_stats__rank').innerText = `rank: \n${leftPlayer.displayedRank}`;
+    let statXp_1 = document.querySelector('.opp_1_stats__xp').innerText = `xp: \n_${leftPlayer.expirience}_`;
+    let statHealth_1 = document.querySelector('.opp_1_stats__currentHealth').innerText = `HP: \n_${leftPlayer.currentHealth}_`;
+    let statHeavyWounds_1 = document.querySelector('.opp_1_stats__heavyWounds').innerText = `Heavy Wounds: \n_${leftPlayer.heavyWounds}_`;
+    let statDeadlyWounds_1 = document.querySelector('.opp_1_stats__deadlyWounds').innerText = `Deadly Wounds: \n_${leftPlayer.deadlyWounds}_`;
+
+    let statName_2 = document.querySelector('.opp_2_stats__name').innerText = `name: \n${rightPlayer.name}`;
+    let statArmor_2 = document.querySelector('.opp_2_stats__armor').innerText = `armor: \n${rightPlayer.armor.name}`;
+    let statWeapon_2 = document.querySelector('.opp_2_stats__currentWeapon').innerText = `weapon: \n${rightPlayer.currentWeapon.name}`;
+    let statMove_2 = document.querySelector('.opp_2_stats__move').innerText = `move: \n_${rightPlayer.move}_`;
+    let statAcc_2 = document.querySelector('.opp_2_stats__accuracy').innerText = `Acc: \n_${rightPlayer.accuracy}_`;
+    let statMaxHealth_2 = document.querySelector('.opp_2_stats__maxHealth').innerText = `Max HP: \n_${rightPlayer.maxHealth}_`;
+    let statRank_2 = document.querySelector('.opp_2_stats__rank').innerText = `rank: \n${rightPlayer.displayedRank}`;
+    let statXp_2 = document.querySelector('.opp_2_stats__xp').innerText = `xp: \n_${rightPlayer.expirience}_`;
+    let statHealth_2 = document.querySelector('.opp_2_stats__currentHealth').innerText = `HP: \n_${rightPlayer.currentHealth}_`;
+    let statHeavyWounds_2 = document.querySelector('.opp_2_stats__heavyWounds').innerText = `Heavy Wounds: \n_${rightPlayer.heavyWounds}_`;
+    let statDeadlyWounds_2 = document.querySelector('.opp_2_stats__deadlyWounds').innerText = `Deadly Wounds: \n_${rightPlayer.deadlyWounds}_`;
+};
+
+showStats();
+// let showStatsEverySec = setInterval(showStats, 1000);
+// пока что можно навесить на выстрелы, нет глобальных событий и карты, выбора оружия и брони
 
 // ДОБАВИТЬ СЧЕТЧИК ХОДОВ. 2 независимых счетчика(shotsMade) на кнопках Take a shot! оппонентов(на замыкании) плюсуются в общий счетчик.
 // пометить уже того, кто сейчас должен стрелять. возможно добавления класса к кнопке выстрела (или мземенеие бордера на огромный бордер, ченить попроще пока что)

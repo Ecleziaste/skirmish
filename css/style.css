@@ -108,6 +108,9 @@ body {
     margin: 5px;
     padding: 5px;
     font-size: 30px;
+    /* расположить ближе к иозображениям персонажей */
+    /* z-index: 4;
+    justify-self: flex-start; */
 }
 /* TODO: заставить кнопку с выстрелом каждого прилипнуть ближе к изображению персонажа */
 /* .opponent_1_shot {
@@ -139,7 +142,8 @@ body {
     height: 24%;
     width: 30%;
     margin: 1px;
-    border: rgb(68, 66, 43) 2px solid;
+    border: rgb(82, 79, 54) 2px solid;
+    color: #811a7c;
     opacity: 0.8;
     line-height: 0.6;
     overflow-wrap: break-word;
@@ -148,7 +152,38 @@ body {
     /* text-align: start end; */
     /* text-align: justify; */
 }
-.inner_text {
+.pointer{
+    cursor: pointer;
+}
+.opp_1_stats__name, .opp_2_stats__name{
+    color: #2d312d;
+    opacity: 1;
+    font-weight: 600;
+}
+.opp_1_stats__accuracy, .opp_2_stats__accuracy{
+    color: #004d06;
+    opacity: 1;
+    font-weight: 600;
+}
+.opp_1_stats__currentHealth, .opp_2_stats__currentHealth{
+    color: #cf0f0f;
+    opacity: 1;
+    font-weight: 600;
+}
+.opp_1_stats__heavyWounds, .opp_2_stats__heavyWounds {
+    color: #f54500;
+    opacity: 1;
+    font-weight: 600;
+}
+.opp_1_stats__xp, .opp_2_stats__xp{
+    color: goldenrod;
+    opacity: 1;
+}
+.opp_1_stats__rank, .opp_2_stats__rank{
+    color: goldenrod;
+}
+
+/* .inner_text {
     position: absolute;
     left: 0;
     top: 0;
@@ -156,7 +191,7 @@ body {
     color: #74149b;
     margin: 0;
     padding: 0;
-}
+} */
 .bodyparts {
     border: #00820b 2px solid;
     border-radius: 50%;
