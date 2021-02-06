@@ -52,6 +52,7 @@ function Humanoid ( name, weapon, armor, items, weaponToEquip, itemToEquip, item
         // на defaultAccuracy в свою очередь будут влиять перки и другие постоянные модификаторы
     };
 
+
     // // повреждения правой и левой ног
     // if (that.dmgTaken[4] == 0) {
     //     that.accuracy = that.defaultAccuracy + that.modAccuracy;
@@ -73,8 +74,37 @@ function Humanoid ( name, weapon, armor, items, weaponToEquip, itemToEquip, item
     //     console.log(that.accuracy)
     // }
     
+    
+    this.defaultMobility = 4;
+    this.mobilityPermaModifier = 0;
+    this.modifiedMobility = 0;
     // текущие очки ходов
-    this.move = 4;
+    this.movePoints = this.defaultMobility + this.mobilityPermaModifier + this.modifiedMobility;
+    this.changeMobility = function (modifier) {
+        // modifier для красткосрочных событий в бою
+        let modMobilityRightLeg = 0;
+        let modMobilityLeftLeg = 0;
+        // проверка повреждений головы 
+        if (this.dmgTaken[4] == 0) {
+            modMobilityRightLeg = 0; 
+        } else if (this.dmgTaken[4] >= 4 && this.dmgTaken[4] <= 6) {
+            modMobilityRightLeg = -0.5;
+        } else if (this.dmgTaken[4] >= 7) {
+            modMobilityRightLeg = -1;
+        }
+        // повреждения правой и левой рук
+        if (this.dmgTaken[5] == 0) {
+            modMobilityLeftLeg = 0;
+        } else if (this.dmgTaken[5] >= 4 && this.dmgTaken[5] <= 6) {
+            modMobilityLeftLeg = -0.5;
+        } else if (this.dmgTaken[5] >= 7) {
+            modMobilityLeftLeg = -1;
+        }
+
+        let modMobility = modMobilityRightLeg + modMobilityLeftLeg;
+        this.modifiedMobility = modMobility + modifier;
+        this.movePoints = this.defaultMobility + this.mobilityPermaModifier + this.modifiedMobility;
+    };
     // кол-во ходов по карте. отнимается за передвижение и действия, когда равно нулю - пояляется кнопка ЗАКОНЧИТЬ ХОД(ф-ия передачи хода другому игроку)
     this.escape = 2;
     // величина, влияющая на шанс сбежать из боя, реализуется расчетом runawayRoll() при нажатии на кнопку "выход из боя"
@@ -145,7 +175,6 @@ function Humanoid ( name, weapon, armor, items, weaponToEquip, itemToEquip, item
             this.checkCondition(-3);
         }
     };
-    // this.heavyWoundsCount = 0;
     this.heavyWounds = 0;
     this.deadlyWounds = 0;
     // проверка состояния здоровья игрока после событий
@@ -162,7 +191,6 @@ function Humanoid ( name, weapon, armor, items, weaponToEquip, itemToEquip, item
         
         if ( this.currentHealth > this.maxHealth ) {
             this.currentHealth = this.maxHealth;
-            // this.currentHealth = this.maxHealth + this.modifiedHealth;
         };
         if ( this.currentHealth <= 0 ) {
             // if (this.currentHealth <= -5) {тут вызываем ф-ию с анимацией обильного кровотечения};
@@ -298,7 +326,7 @@ function Armor ( name ) {
     this.defence = 1;
     // для разных частей тела физ защиту реализовать прямо тут?
     this.chemDefence = 1;
-}
+};
 
 function Inventory ( item ) {
     this.items = {};
@@ -307,7 +335,8 @@ function Inventory ( item ) {
     // а длина массива не должна быть больше чем это число, сравинваем при операциях с инвентарем)
     // тут методы itemRemove() и itemAdd() должны пихать и доставать из массива(объекта) размером 10 итемы
     // делать проверку if items length >= 10 мы блокируем добавление нвых итемов?
-}
+    // похоже, придется пересоздавать массив с предеметами до нужной длины или удалять всё, что выше НУЖНОЙ длины, и возвращать обратно
+};
 //FIXME: ИЛИ
 // this.inventory = [] - массив\объект с items внутри
 // 2 метода - this.itemAdd() и this.itemRemove(), работающие с этим массивом\объектом

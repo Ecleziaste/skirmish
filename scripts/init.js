@@ -85,6 +85,8 @@ healButton.addEventListener('click', () => {
     rightPlayer.changeHealth(0);
     leftPlayer.changeAccuracy(0);
     rightPlayer.changeAccuracy(0);
+    leftPlayer.changeMobility(0);
+    rightPlayers.changeMobility(0);
     leftPlayer.currentHealth = leftPlayer.maxHealth;
     rightPlayer.currentHealth = rightPlayer.maxHealth;
     leftPlayer.checkCondition(0);
@@ -154,7 +156,7 @@ function showStats() {
     let statName_1 = document.querySelector('.opp_1_stats__name').innerText = `name: \n${leftPlayer.name}`;
     let statArmor_1 = document.querySelector('.opp_1_stats__armor').innerText = `armor: \n${leftPlayer.armor.name}`;
     let statWeapon_1 = document.querySelector('.opp_1_stats__currentWeapon').innerText = `weapon: \n${leftPlayer.currentWeapon.name}`;
-    let statMove_1 = document.querySelector('.opp_1_stats__move').innerText = `move: \n_${leftPlayer.move}_`;
+    let statMove_1 = document.querySelector('.opp_1_stats__move').innerText = `move: \n_${leftPlayer.movePoints}_`;
     let statAcc_1 = document.querySelector('.opp_1_stats__accuracy').innerText = `Acc: \n_${leftPlayer.accuracy}_`;
     let statMaxHealth_1 = document.querySelector('.opp_1_stats__maxHealth').innerText = `Max HP: \n_${leftPlayer.maxHealth}_`;
     let statRank_1 = document.querySelector('.opp_1_stats__rank').innerText = `rank: \n${leftPlayer.displayedRank}`;
@@ -167,7 +169,7 @@ function showStats() {
     let statName_2 = document.querySelector('.opp_2_stats__name').innerText = `name: \n${rightPlayer.name}`;
     let statArmor_2 = document.querySelector('.opp_2_stats__armor').innerText = `armor: \n${rightPlayer.armor.name}`;
     let statWeapon_2 = document.querySelector('.opp_2_stats__currentWeapon').innerText = `weapon: \n${rightPlayer.currentWeapon.name}`;
-    let statMove_2 = document.querySelector('.opp_2_stats__move').innerText = `move: \n_${rightPlayer.move}_`;
+    let statMove_2 = document.querySelector('.opp_2_stats__move').innerText = `move: \n_${rightPlayer.movePoints}_`;
     let statAcc_2 = document.querySelector('.opp_2_stats__accuracy').innerText = `Acc: \n_${rightPlayer.accuracy}_`;
     let statMaxHealth_2 = document.querySelector('.opp_2_stats__maxHealth').innerText = `Max HP: \n_${rightPlayer.maxHealth}_`;
     let statRank_2 = document.querySelector('.opp_2_stats__rank').innerText = `rank: \n${rightPlayer.displayedRank}`;
@@ -181,5 +183,7 @@ function showStats() {
 showStats();
 // let showStatsEverySec = setInterval(showStats, 1000);
 // пока что можно навесить на выстрелы, нет глобальных событий и карты, выбора оружия и брони
+
+// монстры могут попробовать сбежать при нанесении слишком большого разового урона, при появлении\увеличении тяжелых ран, при приближении смертельной раны
 
 // FIXME: иногда не срабатывает код при нажатии на выстрел левого персонажа, само нажатие засчитывается

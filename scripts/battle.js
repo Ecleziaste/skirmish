@@ -12,28 +12,30 @@ function accRoll(attPlayer, defPlayer, randomWound) {
         } else if (attPlayer.currentWeapon.type == "shotgun") {
             alert("Shoot ONCE to ANOTHER bodypart after random shot -_-")
             let randomWound = randomizerZeroFive();
-            randShot(attPlayer, defPlayer, randomWound)
+            randShot(attPlayer, defPlayer);
             // реализовать рандомную стрельбу после прицеьного выстрела
         } else {
             alert("You can choose where to shoot ONCE -_-" + "\nПрицельная стрельба по ОДНОЙ части тела!")
         }   
     } else if ( totalAcc > 1 && totalAcc <= 4 ) {
         alert("Random shot!" + "\nСтрельба от бедра.");
-        randShot(attPlayer, defPlayer, randomWound)
         if (attPlayer.currentWeapon.type == "smg") {
-            let randomWound = randomizerZeroFive();
-            randShot(attPlayer, defPlayer, randomWound)
+            randShot(attPlayer, defPlayer);
+            randShot(attPlayer, defPlayer);
         } else if (attPlayer.currentWeapon.type == "shotgun") {
-            let randomWound = randomizerZeroFive();
-            randShot(attPlayer, defPlayer, randomWound)
+            randShot(attPlayer, defPlayer);
+            randShot(attPlayer, defPlayer);
+        } else {
+            randShot(attPlayer, defPlayer);
         }
     } else if ( totalAcc <= 1 ) {
-        alert("You missed :(" + "\nПромах...")
+        alert("You missed :(" + "\nПромах...");
     }
 };
 
-// заменить на randShot, внутри создать переменную randomWound и присвоить ей результат работы рандомайзера
-function randShot (attPlayer, defPlayer, randomWound) {
+// ф-ия рандомного выстрела
+function randShot (attPlayer, defPlayer) {
+    let randomWound = randomizerZeroFive();
     defPlayer.hvyWndCheck();
     let dmg = attPlayer.currentWeapon.damage - defPlayer.armor.defence;
         if (dmg <= 0) {
@@ -60,12 +62,13 @@ function randShot (attPlayer, defPlayer, randomWound) {
     attPlayer.checkRank(2);
     defPlayer.checkRank(1);
     defPlayer.changeAccuracy(0);
+    defPlayer.changeMobility(0);
     defPlayer.changeHealth(0);
     showHealth();
     checkVictory(); 
 };
 
-// работа прицельных выстрелов. ф-ия НЕ читалась из battle.js
+// работа прицельного выстрела
 function aimShot (attPlayer, defPlayer, bodypart) {
     defPlayer.hvyWndCheck();
     let dmg = attPlayer.currentWeapon.damage - defPlayer.armor.defence;
@@ -80,6 +83,7 @@ function aimShot (attPlayer, defPlayer, bodypart) {
     attPlayer.checkRank(2);
     defPlayer.checkRank(1);
     defPlayer.changeAccuracy(0);
+    defPlayer.changeMobility(0); 
     defPlayer.changeHealth(0);
     showHealth();
     checkVictory();
@@ -109,7 +113,6 @@ function checkWoundsCondition (that , i , j) {
         // проверяем на победу, ибо 3 тяжелые раны приравниваются к смерти
     }
 };
-
 
 //получаем рандомное число от 0 до 5
 function randomizerZeroFive () {
