@@ -1,14 +1,16 @@
 'use strict';
 //создание экземпляров оружия и брони
 let startingArmor = new Armor ("jacket");
+// (name, type, oneHanded, damage, accuracy, capacity, jammingChance, size, availability)
+let makarov = new Weapon ( "Makarov gun", "pistol", true, 2, -1, 3, 0, 1, 1 );
+let uzi = new Weapon ( "UZI", "smg", true, 2, -1, 3, 0, 1, 1 );
+// shortbarrel -3 accuracy against humanoids; -2 accuracy against monsters
+let shortBarrel = new Weapon ( "Shortbarrel", "shotgun", false, 3, -3, 4, 0, 1, 1 );
+let remington = new Weapon( "Remington-870", "shotgun", false, 3, -2, 4, 0, 1, 1 );
 
-let makarov = new Makarov ("Makarov gun");
-let remington = new Remington870("Remington-870")
-let uzi = new UZI ("UZI")
-let shortBarrel = new Shortbarrel ("Shortbarrel");
 //создание 2 оппонентов (левого и правого - названо для удобства разработки)
-let leftPlayer = new Humanoid("Bandit", uzi, startingArmor);
-let rightPlayer = new Humanoid("Soldier", shortBarrel, startingArmor);
+let leftPlayer = new Humanoid( "Bandit", uzi, startingArmor );
+let rightPlayer = new Humanoid( "Soldier", shortBarrel, startingArmor );
 
 let target = document.querySelectorAll( '.bodyparts' );
 let targets = Array.from( target );
@@ -86,7 +88,7 @@ healButton.addEventListener('click', () => {
     leftPlayer.changeAccuracy(0);
     rightPlayer.changeAccuracy(0);
     leftPlayer.changeMobility(0);
-    rightPlayers.changeMobility(0);
+    rightPlayer.changeMobility(0);
     leftPlayer.currentHealth = leftPlayer.maxHealth;
     rightPlayer.currentHealth = rightPlayer.maxHealth;
     leftPlayer.checkCondition(0);

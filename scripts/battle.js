@@ -59,13 +59,8 @@ function randShot (attPlayer, defPlayer) {
     }
 
     checkWoundsCondition(defPlayer, dmgBodypart, paintWound);
-    attPlayer.checkRank(2);
-    defPlayer.checkRank(1);
-    defPlayer.changeAccuracy(0);
-    defPlayer.changeMobility(0);
-    defPlayer.changeHealth(0);
-    showHealth();
-    checkVictory(); 
+
+    shotAftermath(attPlayer, defPlayer); 
 };
 
 // работа прицельного выстрела
@@ -80,11 +75,15 @@ function aimShot (attPlayer, defPlayer, bodypart) {
     defPlayer.dmgTaken[bodypart] += dmg;
     defPlayer.additionalDmg(bodypart);
  
-    attPlayer.checkRank(2);
-    defPlayer.checkRank(1);
-    defPlayer.changeAccuracy(0);
-    defPlayer.changeMobility(0); 
-    defPlayer.changeHealth(0);
+    shotAftermath(attPlayer, defPlayer);
+};
+// последствия от выстрела
+function shotAftermath (attaker, attaked) {
+    attaker.checkRank(2);
+    attaked.checkRank(1);
+    attaked.changeAccuracy(0);
+    attaked.changeMobility(0); 
+    attaked.changeHealth(0);
     showHealth();
     checkVictory();
 };
