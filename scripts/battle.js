@@ -11,9 +11,10 @@ function accRoll(attPlayer, defPlayer, randomWound) {
             alert("You can shoot TWICE at ANY bodypart -_-" + "\nПрицельная стрельба по ДВУМ ЛЮБЫМ частям тела!")
         } else if (attPlayer.currentWeapon.type == "shotgun") {
             alert("Shoot ONCE to ANOTHER bodypart after random shot -_-")
-            let randomWound = randomizerZeroFive();
-            randShot(attPlayer, defPlayer);
-            // реализовать рандомную стрельбу после прицеьного выстрела
+            let randomWound = randShot(attPlayer, defPlayer);
+            // чтобы понимать, куда попал случайный выстрел, randomWound приходит ретёрном из randShot выше
+            showDamagedBodypart (randomWound, attPlayer, defPlayer);
+            // реализовать рандомную стрельбу после прицельного выстрела
         } else {
             alert("You can choose where to shoot ONCE -_-" + "\nПрицельная стрельба по ОДНОЙ части тела!")
         }   
@@ -31,7 +32,7 @@ function accRoll(attPlayer, defPlayer, randomWound) {
     } else if ( totalAcc <= 1 ) {
         alert("You missed :(" + "\nПромах...");
     }
-};
+}
 
 // ф-ия рандомного выстрела
 function randShot (attPlayer, defPlayer) {
@@ -56,10 +57,12 @@ function randShot (attPlayer, defPlayer) {
         paintWound = randomWound;
     }
 
-    checkWoundsCondition(defPlayer, dmgBodypart, paintWound);
+    defPlayer.checkWoundsCondition(dmgBodypart, paintWound);
+    // checkWoundsCondition(defPlayer, dmgBodypart, paintWound);
 
-    shotAftermath(attPlayer, defPlayer); 
-};
+    shotAftermath(attPlayer, defPlayer);
+    return randomWound; 
+}
 
 // работа прицельного выстрела
 function aimShot (attPlayer, defPlayer, bodypart) {
@@ -72,7 +75,7 @@ function aimShot (attPlayer, defPlayer, bodypart) {
     defPlayer.additionalDmg(bodypart);
  
     shotAftermath(attPlayer, defPlayer);
-};
+}
 // последствия от выстрела
 function shotAftermath (attaker, attaked) {
     attaker.checkRank(2);
@@ -82,32 +85,7 @@ function shotAftermath (attaker, attaked) {
     attaked.changeHealth(0);
     showHealth();
     checkVictory();
-};
-// вынесенная наружу из объекта функция проверки состояния объекта и окрашивания нужных целей + проверки и реализации последствий от ран
-// that - это тот, В КОГО стреляют(объект)
-function checkWoundsCondition (that , i , j) {
-    if (that.dmgTaken[i] <= 0) {
-        targets[j].classList.remove('low_wound','medium_wound', 'heavy_wound');
-    }
-    if (that.dmgTaken[i] >= 1 && that.dmgTaken[i] <= 3) {
-        targets[j].classList.add('low_wound');
-        targets[j].classList.remove('medium_wound', 'heavy_wound');
-    }
-    if (that.dmgTaken[i] >= 4 && that.dmgTaken[i] <= 6) {
-        targets[j].classList.add('medium_wound');
-        targets[j].classList.remove('low_wound', 'heavy_wound');
-    }
-    if (that.dmgTaken[i] >= 7) {
-        targets[j].classList.add('heavy_wound');
-        targets[j].classList.remove('low_wound', 'medium_wound');
-        // that.heavyWounds += 1;
-        // как добавить в объект heavyWounds += 1 ЕДИНОЖДЫ? Мб переделать всё же отрисовку ран для каждого игрока(разделить массив targets на 2 разных массива и брать оттуда инфу)
-        //FIXME:   !!  This is Brutal mode - смерть при двух попаданиях в тяжелую рану  !!  следует вынести в ф-ию
-        // that.checkCondition(0);
-        checkVictory(); 
-        // проверяем на победу, ибо 3 тяжелые раны приравниваются к смерти
-    }
-};
+}
 
 //получаем рандомное число от 0 до 5
 function randomizerZeroFive () {
@@ -130,12 +108,22 @@ function checkVictory () {
     } else if (rightPlayer.isAlive == false) {
         alert(leftPlayer.name + " is victorious!")
     }
-};
+    //  else (console.log("No one is victorious yet."))
+}
 
 function showHealth () {
     alert(leftPlayer.name + ' with ' + leftPlayer.currentWeapon.name + ' HP = ' + leftPlayer.currentHealth + " \nvs "
      + "\n" + rightPlayer.name + ' with ' + rightPlayer.currentWeapon.name + ' HP = ' + rightPlayer.currentHealth + " \nKeep fighting!");
-};
+}
+// TODO: switch \ case mb?
+function showDamagedBodypart (bodypart, attPlayer, defPlayer) {
+    if ( bodypart == 0 ) {console.log(`${attPlayer.name} damaged ${defPlayer.name}'s HEAD`)}
+    else if ( bodypart == 1 ) {console.log(`${attPlayer.name} damaged ${defPlayer.name}'s Right Hand`)}
+    else if ( bodypart == 2 ) {console.log(`${attPlayer.name} damaged ${defPlayer.name}'s Torso`)}
+    else if ( bodypart == 3 ) {console.log(`${attPlayer.name} damaged ${defPlayer.name}'s Left Hand`)}
+    else if ( bodypart == 4 ) {console.log(`${attPlayer.name} damaged ${defPlayer.name}'s Right Leg`)}
+    else {console.log(`${attPlayer.name} damaged ${defPlayer.name}'s Left leg`)}
+}
 // shotPermission = function (attPlayer, defPlayer) {
 //     if (attPlayer.rank >= attPlayer.currentWeapon.availability) {
 //         alert("You are shooting")

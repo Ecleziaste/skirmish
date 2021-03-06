@@ -12,7 +12,7 @@ const remington = new Weapon( "Remington-870", "shotgun", false, 3, -2, 4, 0, 1,
 
 //создание 2 оппонентов (левого и правого - названо для удобства разработки)
 const leftPlayer = new Humanoid( "Bandit", uzi, startingArmor );
-const rightPlayer = new Humanoid( "Soldier", shortBarrel, startingArmor );
+const rightPlayer = new Humanoid( "Soldier", remington, startingArmor );
 
 const target = document.querySelectorAll( '.bodyparts' );
 const targets = Array.from( target );
@@ -44,7 +44,7 @@ function createCounter() {
     return function() {
       return counter++;
     }
-  };
+}
   const leftShotCounter = createCounter();
   const rightShotCounter = createCounter();
   let shotsMadeLeft = leftShotCounter();
@@ -60,7 +60,7 @@ for ( let i = 0; i <= 5; i++ ) {
     targets[i].addEventListener('click', () => {
         aimShot (rightPlayer, leftPlayer, i);
         let j = i;
-        checkWoundsCondition ( leftPlayer , i , j );
+        leftPlayer.checkWoundsCondition ( i , j );
         showStats();
     });
     
@@ -70,7 +70,7 @@ for ( let i = 0; i <= 5; i++ ) {
     targets[i+6].addEventListener('click', () => {
         aimShot (leftPlayer, rightPlayer, i);
         let j = i + 6;
-        checkWoundsCondition ( rightPlayer , i , j);
+        rightPlayer.checkWoundsCondition ( i , j );
         showStats();
     });
     
@@ -97,11 +97,11 @@ healButton.addEventListener('click', () => {
     rightPlayer.checkCondition(0);
     for ( let i = 0; i <= 5; i++ ) {
         let j = i;
-        checkWoundsCondition ( leftPlayer , i , j );  
+        leftPlayer.checkWoundsCondition ( i , j );  
     }
     for ( let i = 0; i <= 5; i++ ) {
         let j = i+6;
-        checkWoundsCondition ( rightPlayer , i , j );  
+        rightPlayer.checkWoundsCondition ( i , j );  
     }
     showStats();
     // alert("Боги желают продолжения битвы!")
@@ -122,7 +122,7 @@ let healLeftHeadBtn = document.querySelector( '.opponent_1_heal_head' );
 healLeftHeadBtn.addEventListener('click', () => {
     if (leftPlayer.dmgTaken[0] >= 1) {
     leftPlayer.dmgTaken[0] -= 2;
-    checkWoundsCondition(leftPlayer, 0, 0);
+    leftPlayer.checkWoundsCondition( 0, 0 );
     leftPlayer.currentHealth += 2;
     }
     if (leftPlayer.dmgTaken[0] <= 0){
@@ -135,7 +135,7 @@ let healRightHeadBtn = document.querySelector( '.opponent_2_heal_head' );
 healRightHeadBtn.addEventListener('click', () => {
     if (rightPlayer.dmgTaken[0] >= 1) {
     rightPlayer.dmgTaken[0] -= 2;
-    checkWoundsCondition(rightPlayer, 0, 6);
+    rightPlayer.checkWoundsCondition( 0, 6 );
     rightPlayer.currentHealth += 2;
     }
     if (rightPlayer.dmgTaken[0] <= 0) {
@@ -182,9 +182,9 @@ function showStats() {
     let statHeavyWounds_2 = document.querySelector('.opp_2_stats__heavyWounds').innerText = `Heavy Wounds: \n_${rightPlayer.heavyWounds}_`;
     let statDeadlyWounds_2 = document.querySelector('.opp_2_stats__deadlyWounds').innerText = `Deadly Wounds: \n_${rightPlayer.deadlyWounds}_`;
     let statShotsMade_2 = document.querySelector('.opp_2_stats__shotsMade').innerText = `Shots Made: \n_${shotsMadeRight}_`;
-};
+}
 
-showStats();
+showStats()
 // let showStatsEverySec = setInterval(showStats, 1000);
 // пока что можно навесить на выстрелы, нет глобальных событий и карты, выбора оружия и брони
 

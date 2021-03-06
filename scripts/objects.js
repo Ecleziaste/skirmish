@@ -187,6 +187,7 @@ class Humanoid {
     // ф-ия дополнительного урона в зависимости от условий(тяжелые раны, облучение, другие дебаффы), запускать после расчета урона от выстрела
     additionalDmg = function (bodypart) {
         if (this.hvyWnd[bodypart] == true) {
+            this.dmgTaken[bodypart] += 3;
             this.checkCondition(-3);
         }
     };
@@ -226,26 +227,30 @@ class Humanoid {
             this.isAlive = false;
         };
     };
-};
 
-// КОНСТРУКТОР ОРУЖИЯ
-// finction  Makarov (name) {
-//         this.name = name;
-//         this.type = "pistol";
-//         this.capacity = 3;
-//         // this.weaponCapacity = 3;
-//         // должно заполнять количество слотов в массиве(или просто в переменной считается) weaponCapacity в объекте игрока
-//         this.oneHanded = true;
-//         this.isJammed = false;
-//         this.jammingChance = 0;
-//         this.size = 1;
-//         // количество слотов в массиве предметов Inventory
-//         this.availability = 1;
-//         this.availabilityDisplay = "for Rookie";
-//         this.damage = 2;
-//         this.accuracy = -1;
+    checkWoundsCondition = function  ( i , j ) {
+        if (this.dmgTaken[i] <= 0) {
+            targets[j].classList.remove('low_wound','medium_wound', 'heavy_wound');
+        }
+        if (this.dmgTaken[i] >= 1 && this.dmgTaken[i] <= 3) {
+            targets[j].classList.add('low_wound');
+            targets[j].classList.remove('medium_wound', 'heavy_wound');
+        }
+        if (this.dmgTaken[i] >= 4 && this.dmgTaken[i] <= 6) {
+            targets[j].classList.add('medium_wound');
+            targets[j].classList.remove('low_wound', 'heavy_wound');
+        }
+        if (this.dmgTaken[i] >= 7) {
+            targets[j].classList.add('heavy_wound');
+            targets[j].classList.remove('low_wound', 'medium_wound');
+            // FIXME:  this.heavyWounds += 1; This is Brutal mode - смерть при двух попаданиях в тяжелую рану  !!  следует вынести в ф-ию
+            // Мб переделать всё же отрисовку ран для каждого игрока(разделить массив targets на 2 разных массива и брать оттуда инфу)
+            checkVictory(); 
+            // проверяем на победу, ибо 3 тяжелые раны приравниваются к смерти
+        }
+    }
+}
 
-// };
 // КЛАСС ОРУЖИЯ
 class Weapon {
     constructor( name, type, oneHanded, damage, accuracy, capacity, jammingChance, size, availability ) {
@@ -270,20 +275,14 @@ class Weapon {
         if ( value = 3 ) {return this.availabilityDisplay = "for Veteran";} 
         if ( value = 4 ) {return this.availabilityDisplay = "for Master";}   
     }
-};
+}
 
 // КОНСТРУКТОР БРОНИ
 class Armor {
-    constructor( name, defence, bulletDefArr, headDef, rHandDef, torsoDef, lHandDef, rLegDef, lLegDef, chem, rad, fire, avail ) {
+    constructor( name, defence, bulletDefArr, chem, rad, fire, avail ) {
         this.name = name;
         this.defence = defence;
         this.bulletDef = bulletDefArr;
-        // this.headDef = headDef;
-        // this.rightHandDef = rHandDef;
-        // this.torsoDef = torsoDef;
-        // this.leftHandDef = lHandDef;
-        // this.rightLegDef = rLegDef;
-        // this.leftLegDef = lLegDef;
         // остальные типы защиты
         this.chemDef = chem;
         this.radDef = rad;
@@ -291,7 +290,7 @@ class Armor {
 
         this.availability = avail;
     }
-    // FIXME: наследовать от гуманоида?
+    // FIXME: наследовать от Weapon?
     set availabilityDisplay(value) {
         value = this.availability; 
         if ( value = 1 ) {return this.availabilityDisplay = "for Rookie";}
@@ -299,7 +298,7 @@ class Armor {
         if ( value = 3 ) {return this.availabilityDisplay = "for Veteran";} 
         if ( value = 4 ) {return this.availabilityDisplay = "for Master";}   
     }
-};
+}
 
 function Inventory ( item ) {
     this.items = {};
@@ -309,7 +308,7 @@ function Inventory ( item ) {
     // тут методы itemRemove() и itemAdd() должны пихать и доставать из массива(объекта) размером 10 итемы
     // делать проверку if items length >= 10 мы блокируем добавление нвых итемов?
     // похоже, придется пересоздавать массив с предеметами до нужной длины или удалять всё, что выше НУЖНОЙ длины, и возвращать обратно
-};
+}
 //FIXME: ИЛИ
 // this.inventory = [] - массив\объект с items внутри
 // 2 метода - this.itemAdd() и this.itemRemove(), работающие с этим массивом\объектом
