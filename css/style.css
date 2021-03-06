@@ -45,7 +45,7 @@ body {
 .wrapper {
     display: flex;
     flex-flow: row wrap;
-    background: url(https://cutewallpaper.org/21/dark-brick-wallpaper/48-Black-Brick-Wallpaper-on-WallpaperSafari.jpg) no-repeat center center fixed; 
+    background: url(https://cutewallpaper.org/21/dark-brick-wallpaper/48-Black-Brick-Wallpaper-on-WallpaperSafari.jpg) no-repeat center; 
     -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;
@@ -270,17 +270,14 @@ body {
 }
 .neon {
     display: flex;
-    /* justify-content: center; */
     margin: 0 auto;
-    /* position: relative; */
     overflow: hidden;
-    filter: brightness(200%);
+    filter: brightness(160%);
     background-color: black;
 } 
 .text {
     display: flex;
     justify-content: center;
-    /* margin: 30 auto; */
     background-color: black;
     color: white;
     font-size: 60px;
@@ -289,8 +286,7 @@ body {
     text-transform: uppercase;
     /* position: relative; */
     user-select: none;
-    /* width: auto; */
-    /* width: 100%; */
+
 }
 .text::before {
     content: attr(data-text);
@@ -301,7 +297,7 @@ body {
 }
 .gradient {
     position: absolute;
-    background: linear-gradient(45deg, red, gold, lightgreen, gold, red);
+    background: linear-gradient(60deg, red, gold, lightgreen, gold, red);
     top: 0;
     left: 0;
     right: 0;
@@ -323,9 +319,9 @@ body {
     radial-gradient(
     circle,
     white,
-    black 25%
+     black 40%
     ) center / 12.5% 12.5%;
-    animation: light 5s linear infinite;
+    animation: light 8s linear infinite;
     mix-blend-mode: color-dodge;
 }
 @keyframes light {
