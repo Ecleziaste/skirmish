@@ -1,25 +1,27 @@
 'use strict';
 //создание экземпляров оружия и брони
-let startingArmor = new Armor ("jacket");
+// ( name, defence, bulletDefArr, chem, rad, fire, avail )
+const startingArmor = new Armor ("jacket", 1, [1,1,2,1,1,1], 1, 0, 0, 1);
+
 // (name, type, oneHanded, damage, accuracy, capacity, jammingChance, size, availability)
-let makarov = new Weapon ( "Makarov gun", "pistol", true, 2, -1, 3, 0, 1, 1 );
-let uzi = new Weapon ( "UZI", "smg", true, 2, -1, 3, 0, 1, 1 );
+const makarov = new Weapon ( "Makarov gun", "pistol", true, 2, -1, 3, 0, 1, 1 );
+const uzi = new Weapon ( "UZI", "smg", true, 2, -1, 3, 0, 1, 1 );
 // shortbarrel -3 accuracy against humanoids; -2 accuracy against monsters
-let shortBarrel = new Weapon ( "Shortbarrel", "shotgun", false, 3, -3, 4, 0, 1, 1 );
-let remington = new Weapon( "Remington-870", "shotgun", false, 3, -2, 4, 0, 1, 1 );
+const shortBarrel = new Weapon ( "Shortbarrel", "shotgun", false, 3, -3, 4, 0, 1, 1 );
+const remington = new Weapon( "Remington-870", "shotgun", false, 3, -2, 4, 0, 1, 1 );
 
 //создание 2 оппонентов (левого и правого - названо для удобства разработки)
-let leftPlayer = new Humanoid( "Bandit", uzi, startingArmor );
-let rightPlayer = new Humanoid( "Soldier", shortBarrel, startingArmor );
+const leftPlayer = new Humanoid( "Bandit", uzi, startingArmor );
+const rightPlayer = new Humanoid( "Soldier", shortBarrel, startingArmor );
 
-let target = document.querySelectorAll( '.bodyparts' );
-let targets = Array.from( target );
+const target = document.querySelectorAll( '.bodyparts' );
+const targets = Array.from( target );
 
 // берем кнопки левого и правого оппонента и навешиваем на них листенеры для начала стрельбы
 const leftShot = document.querySelector ('.opponent_1_shot');
 const rightShot = document.querySelector ('.opponent_2_shot');
 // запускаем рандомайзер для рандомного выстрела по противнику для левого игрока,
-// если он удачный, то совершается выстрел в рандомную часть тела праавого игркоа из текущего оружия левого
+// если он удачный, то совершается выстрел в рандомную часть тела правого игрока из текущего оружия левого. + счетчики выстрелов(нажатий)
 leftShot.addEventListener('click', () => {
     let random = randomizerZeroFive();
     accRoll(leftPlayer, rightPlayer, random);
@@ -102,7 +104,7 @@ healButton.addEventListener('click', () => {
         checkWoundsCondition ( rightPlayer , i , j );  
     }
     showStats();
-    alert("Боги желают продолжения битвы!")
+    // alert("Боги желают продолжения битвы!")
     console.log("Боги желают продолжения битвы!")
 });
 // кнопка рандомайзер, решающая, кто стреляет первым

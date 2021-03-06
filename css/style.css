@@ -7,7 +7,9 @@
 body {
     font-family: 'East Sea Dokdo', cursive;
     text-align: center;
-    /* margin: 0 auto; */
+    background: #a2b3a4;
+    /* padding: 0; 
+    margin: 0; */
 }
 .appeal {
     display: flex;
@@ -43,6 +45,11 @@ body {
 .wrapper {
     display: flex;
     flex-flow: row wrap;
+    background: url(https://cutewallpaper.org/21/dark-brick-wallpaper/48-Black-Brick-Wallpaper-on-WallpaperSafari.jpg) no-repeat center center fixed; 
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
     /* height: 600px; */
     /* justify-content: space-evenly; */
 }
@@ -54,7 +61,7 @@ body {
     flex-flow: row wrap;
     justify-content: space-evenly;
     align-items: center;
-    background-color: lightblue;
+    /* background-color: rgb(29, 165, 211); */
     font-size: 25px;
     color: #720000;
     /* align-items: center; */
@@ -105,12 +112,15 @@ body {
 }
 .opponent_1_shot, .opponent_2_shot {
     border: #c4400b 5px solid;
-    margin: 5px;
+    margin: 15px;
     padding: 5px;
     font-size: 30px;
     /* расположить ближе к иозображениям персонажей */
     /* z-index: 4;
     justify-self: flex-start; */
+}
+.active_shooter {
+
 }
 /* TODO: заставить кнопку с выстрелом каждого прилипнуть ближе к изображению персонажа */
 /* .opponent_1_shot {
@@ -249,3 +259,78 @@ body {
     flex-flow: row wrap;
     justify-content: space-between;
 }
+/* */
+.neon_wrapper {
+    display: flex;
+    flex-flow: row wrap;
+    background-color: black;
+    width: 100%;
+    /* justify-content: center;
+    align-items: center; */
+}
+.neon {
+    display: flex;
+    /* justify-content: center; */
+    margin: 0 auto;
+    /* position: relative; */
+    overflow: hidden;
+    filter: brightness(200%);
+    background-color: black;
+} 
+.text {
+    display: flex;
+    justify-content: center;
+    /* margin: 30 auto; */
+    background-color: black;
+    color: white;
+    font-size: 60px;
+    font-weight: bold;
+    font-family: sans-serif;
+    text-transform: uppercase;
+    /* position: relative; */
+    user-select: none;
+    /* width: auto; */
+    /* width: 100%; */
+}
+.text::before {
+    content: attr(data-text);
+    position: absolute;
+    color: white;
+    filter: blur(0.02em);
+    mix-blend-mode: difference;
+}
+.gradient {
+    position: absolute;
+    background: linear-gradient(45deg, red, gold, lightgreen, gold, red);
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    mix-blend-mode: multiply;
+}
+.spotlight {
+    position: absolute;
+    top: -100%;
+    left: -100%;
+    right: 0;
+    bottom: 0;
+    background: 
+    radial-gradient(
+    circle,
+    white,
+    transparent 25%
+    ) center / 25% 25%,
+    radial-gradient(
+    circle,
+    white,
+    black 25%
+    ) center / 12.5% 12.5%;
+    animation: light 5s linear infinite;
+    mix-blend-mode: color-dodge;
+}
+@keyframes light {
+    to {
+    transform: translate(50%, 50%);
+    }
+}
+/*  */

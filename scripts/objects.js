@@ -2,7 +2,7 @@
 
 // КОНСТРУКТОР ЧЕЛОВЕКООБРАЗНЫХ ПЕРСОНАЖЕЙ
 class Humanoid {
-    constructor(name, weapon, armor, items, weaponToEquip, itemToEquip, itemToInventory, perks) {
+    constructor( name, weapon, armor, items, weaponToEquip, itemToEquip, itemToInventory, perks ) {
         this.name = name;
         this.armor = armor;
         this.currentWeapon = weapon;
@@ -248,7 +248,7 @@ class Humanoid {
 // };
 // КЛАСС ОРУЖИЯ
 class Weapon {
-    constructor(name, type, oneHanded, damage, accuracy, capacity, jammingChance, size, availability) {
+    constructor( name, type, oneHanded, damage, accuracy, capacity, jammingChance, size, availability ) {
         this.name = name;
         this.type = type;
         this.oneHanded = oneHanded;
@@ -273,13 +273,32 @@ class Weapon {
 };
 
 // КОНСТРУКТОР БРОНИ
-function Armor ( name ) {
-    this.name = name;
-    // this.availability = 1;
-    // this.availabilityDisplay = "for Rookie";
-    this.defence = 1;
-    // для разных частей тела физ защиту реализовать прямо тут?
-    this.chemDefence = 1;
+class Armor {
+    constructor( name, defence, bulletDefArr, headDef, rHandDef, torsoDef, lHandDef, rLegDef, lLegDef, chem, rad, fire, avail ) {
+        this.name = name;
+        this.defence = defence;
+        this.bulletDef = bulletDefArr;
+        // this.headDef = headDef;
+        // this.rightHandDef = rHandDef;
+        // this.torsoDef = torsoDef;
+        // this.leftHandDef = lHandDef;
+        // this.rightLegDef = rLegDef;
+        // this.leftLegDef = lLegDef;
+        // остальные типы защиты
+        this.chemDef = chem;
+        this.radDef = rad;
+        this.fireDef = fire;
+
+        this.availability = avail;
+    }
+    // FIXME: наследовать от гуманоида?
+    set availabilityDisplay(value) {
+        value = this.availability; 
+        if ( value = 1 ) {return this.availabilityDisplay = "for Rookie";}
+        if ( value = 2 ) {return this.availabilityDisplay = "for Skilled";}
+        if ( value = 3 ) {return this.availabilityDisplay = "for Veteran";} 
+        if ( value = 4 ) {return this.availabilityDisplay = "for Master";}   
+    }
 };
 
 function Inventory ( item ) {

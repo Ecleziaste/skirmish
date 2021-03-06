@@ -37,10 +37,8 @@ function accRoll(attPlayer, defPlayer, randomWound) {
 function randShot (attPlayer, defPlayer) {
     let randomWound = randomizerZeroFive();
     defPlayer.hvyWndCheck();
-    let dmg = attPlayer.currentWeapon.damage - defPlayer.armor.defence;
-        if (dmg <= 0) {
-            dmg = 1;
-        };  
+    // урон при попадании. не может быть меньше единицы
+    let dmg = attPlayer.currentWeapon.damage - defPlayer.armor.bulletDef[randomWound] || 1; 
     defPlayer.checkCondition(-dmg);
      // второй раз вызываем для изменения состояния атакующего персонажа на "живого", если это требуется после его смерти и влияния воли богов
     attPlayer.checkCondition(0);
@@ -66,10 +64,8 @@ function randShot (attPlayer, defPlayer) {
 // работа прицельного выстрела
 function aimShot (attPlayer, defPlayer, bodypart) {
     defPlayer.hvyWndCheck();
-    let dmg = attPlayer.currentWeapon.damage - defPlayer.armor.defence;
-        if (dmg <= 0) {
-            dmg = 1;
-        };
+    let dmg = attPlayer.currentWeapon.damage - defPlayer.armor.bulletDef[bodypart] || 1;
+
     defPlayer.checkCondition(-dmg);
     attPlayer.checkCondition(0);
     defPlayer.dmgTaken[bodypart] += dmg;
