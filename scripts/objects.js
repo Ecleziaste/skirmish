@@ -245,7 +245,7 @@ class Humanoid {
             targets[j].classList.remove('low_wound', 'medium_wound');
             // FIXME:  this.heavyWounds += 1; This is Brutal mode - смерть при двух попаданиях в тяжелую рану  !!  следует вынести в ф-ию
             // Мб переделать всё же отрисовку ран для каждого игрока(разделить массив targets на 2 разных массива и брать оттуда инфу)
-            checkVictory(); 
+            checkVictory.bind(window); 
             // проверяем на победу, ибо 3 тяжелые раны приравниваются к смерти
         }
     }

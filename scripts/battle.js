@@ -105,8 +105,10 @@ function checkVictory () {
 // FIXME: мб не стоит тут вызывать?
     if (leftPlayer.isAlive == false) {
         alert(rightPlayer.name + " is victorious!")
+        console.log(rightPlayer.name + " is victorious!")
     } else if (rightPlayer.isAlive == false) {
         alert(leftPlayer.name + " is victorious!")
+        console.log(leftPlayer.name + " is victorious!")
     }
     //  else (console.log("No one is victorious yet."))
 }
